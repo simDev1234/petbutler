@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/petbutler?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: root
+    password: password
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
