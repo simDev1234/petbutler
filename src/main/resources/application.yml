@@ -1,14 +1,18 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/petbutler?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-    username: root
-    password: password
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:test?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: sa
+    password:
+    h2:
+      console:
+        enabled: true
   redis:
     host: 127.0.0.1
     port: 6379
   jpa:
     defer-datasource-initialization: true
+    database-platform: H2
     hibernate:
       ddl-auto: update
     open-in-view: false
