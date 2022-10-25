@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko"  xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>팻집사</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/tooplate-main.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/slick/slick-theme.css"/>
+  </head>
+
+  <body>
+    
+    <!-- Pre Header -->
+    <div id="pre-header">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <span>팻집사에 오신 것을 환영합니다!<a class = "close-x" onclick="$('#pre-header').hide();">X</a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav th:fragment="fragment-nav" class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+      <div class="container">
+        <a class="navbar-brand" href="/"><img src="../assets/images/logo-small.png" alt="logo"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">홈
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/store">스토어</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/hospitalsAndPharmacy">동물병원/약국 찾기</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/postings">포스팅</a>
+            </li>
+            <li th:if="${not #strings.isEmpty(login)}" class="nav-item">
+              <a class="nav-link" href="#">마이페이지</a>
+            </li>
+            <li th:if="${#strings.isEmpty(login)}" class="nav-item">
+              <a class="nav-link" href="/users/sign-in">로그인/회원가입</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <!-- Banner Starts Here -->
+    <div class="banner">
+      <div class="container">
+        <div style="background-color:red">
+          <div class="caption">
+            <h2>배너 제목</h2>
+            <div class="line-dec"></div>
+            <p>
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+            </p>
+            <div class="main-button">
+              <a href="#">Order Now!</a>
+            </div>
+          </div>
+        </div>
+        <div style="background-color:yellow">
+          <div class="caption">
+            <h2>배너 제목</h2>
+            <div class="line-dec"></div>
+            <p>
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+            </p>
+            <div class="main-button">
+              <a href="#">Order Now!</a>
+            </div>
+          </div>
+        </div>
+        <div style="background-color:green">
+          <div class="caption">
+            <h2>배너 제목</h2>
+            <div class="line-dec"></div>
+            <p>
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+              이것은 상품 내용이것은 상품 내용이것은 상품 내용이것은 상품 내용
+            </p>
+            <div class="main-button">
+              <a href="#">Order Now!</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Banner Ends Here -->
+
+    <!-- Featured Starts Here -->
+    <div class="featured-items">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="section-heading">
+              <div class="line-dec"></div>
+              <h1>팻집사's PICK</h1>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="owl-carousel owl-theme">
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-01.jpg" alt="Item 1">
+                  <h4>Proin vel ligula</h4>
+                  <h6>$15.00</h6>
+                </div>
+              </a>
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-02.jpg" alt="Item 2">
+                  <h4>Erat odio rhoncus</h4>
+                  <h6>$25.00</h6>
+                </div>
+              </a>
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-03.jpg" alt="Item 3">
+                  <h4>Integer vel turpis</h4>
+                  <h6>$35.00</h6>
+                </div>
+              </a>
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-04.jpg" alt="Item 4">
+                  <h4>Sed purus quam</h4>
+                  <h6>$45.00</h6>
+                </div>
+              </a>
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-05.jpg" alt="Item 5">
+                  <h4>Morbi aliquet</h4>
+                  <h6>$55.00</h6>
+                </div>
+              </a>
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-06.jpg" alt="Item 6">
+                  <h4>Urna ac diam</h4>
+                  <h6>$65.00</h6>
+                </div>
+              </a>
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-04.jpg" alt="Item 7">
+                  <h4>Proin eget imperdiet</h4>
+                  <h6>$75.00</h6>
+                </div>
+              </a>
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-05.jpg" alt="Item 8">
+                  <h4>Nullam risus nisl</h4>
+                  <h6>$85.00</h6>
+                </div>
+              </a>
+              <a href="store/detail.html">
+                <div class="featured-item">
+                  <img src="assets/images/item-06.jpg" alt="Item 9">
+                  <h4>Cras tempus</h4>
+                  <h6>$95.00</h6>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Featred Ends Here -->
+
+
+    <!-- Introduction of hospital/pharmacy search page -->
+    <div class="subscribe-form">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="section-heading">
+              <div class="line-dec"></div>
+              <h1>내 새꾸 아프지 마😥</h1>
+            </div>
+          </div>
+          <div class="col-md-8 offset-md-2">
+            <div class="main-content">
+              <p>주변의 동물 병원, 동물 약국을 찾아야할 때</p>
+              <button type="submit" class="button map-button">내 주변 병원/약국 찾기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Introduction Ends Here -->
+
+    <!-- Footer Starts Here -->
+    <div th:fragment="fragment-footer" class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="footer-menu">
+              <ul>
+                <li><a href="#">홈</a></li>
+                <li><a href="#">스토어</a></li>
+                <li><a href="#">동물병원/약국 찾기</a></li>
+                <li><a href="#">포스팅</a></li>
+                <li><a href="#">마이페이지</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer Ends Here -->
+
+    <!-- Sub Footer Starts Here -->
+    <div th:fragment="fragment-sub-footer" class="sub-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="copyright-text">
+              <p>Copyright &copy; 2019 Company Name
+
+                - Design: <a rel="nofollow" href="https://www.facebook.com/tooplate">Tooplate</a>
+                - Develop: <a rel="simDev1234" href="https://github.com/simDev1234/petbutler">simDev1234</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Sub Footer Ends Here -->
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Additional Scripts -->
+    <script src="assets/js/custom.js"></script>
+    <script src="assets/js/owl.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="assets/js/slick/slick.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.banner .container').slick({
+          centerMode:true,
+          dots:true,
+          infinite: true,
+          autoplay: true,
+          speed: 300,
+          slidesToShow: 1,
+          adaptiveHeight: true,
+          cssEase:'linear'
+        });
+      });
+    </script>
+  </body>
+</html>
