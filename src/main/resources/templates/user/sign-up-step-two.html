@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>회원 가입 - 반려동물 등록</title>
+
+  <!-- Font CSS -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+
+  <!-- Bootstrap core CSS -->
+  <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Additional CSS Files -->
+  <link rel="stylesheet" href="../assets/css/fontawesome.css">
+  <link rel="stylesheet" href="../assets/css/tooplate-main.css">
+  <link rel="stylesheet" href="../assets/css/owl.css">
+  <link rel="stylesheet" href="../assets/css/sign-up.css">
+
+  <style>
+    .login-box input{
+      padding-left:0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav th:replace="/fragments/layout.html::fragment-nav"></nav>
+
+  <!-- Sign-in Step Title -->
+  <h2>STEP2 - 반려동물 등록</h2>
+
+  <!-- Register Pet Form -->
+  <div class = "login-box">
+    <form method = "post" action = "/users/register-pets">
+      <label for="thumbnail">프로필</label>
+      <input type="file" id="thumbnail" name="thumbnail">
+      <label for="name">이름</label>
+      <input type="name" id="name" name="name" placeholder="    ex. 프린스 해리스 알렉산더 2세" required>
+      <label for="kind">종명</label>
+      <input type="text" id="kind" placeholder="    ex. 코숏">
+      <label>성별</label><br>
+      <input class = "sex" type="radio" name = "sex" value = "female" checked>
+      <label>남아</label>
+      <input class = "sex" type="radio" name = "sex" value = "male" checked>
+      <label>여아</label><br>
+      <label for="age">나이</label>
+      <input type="text" id="age" name="age" placeholder="    ex. 1세 -> 1"  required>
+      <button onclick = "return register(this.form)">다음으로</button>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <div th:replace="/fragments/layout.html::fragment-footer"/>
+  <div th:replace="/fragments/layout.html::fragment-sub-footer"/>
+
+  <!-- Script -->
+  <script type="text/javascript" src="../assets/js/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="../assets/js/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="../assets/js/sign-up-email.js"></script>
+
+</body>
+</html>
