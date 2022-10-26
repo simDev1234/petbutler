@@ -1,0 +1,51 @@
+/*
+  user sing-up-email css
+*/
+
+/* sign-in title */
+h2{
+  margin:100px auto 40px auto;
+  font-size:21px;
+  font-weight:bold;
+  text-align: center;
+}
+
+/* register form */
+.login-box{
+  width : 400px;
+  margin: auto;
+  border-radius : 5px;
+  background-color : gainsboro;
+  padding : 20px;
+  box-sizing : border-box;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+.login-box select{
+  width:45%;
+  height:50px;
+}
+
+.login-box input[name='butlerLevel'] {
+  width:50%;
+}
+
+.login-box input[type=radio].sex { display:inline-block; width:50px }
+
+.login-box button {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius : 5px;
+  background-color: black;
+  border : none;
+  color : white;
+  cursor : pointer;
+}
