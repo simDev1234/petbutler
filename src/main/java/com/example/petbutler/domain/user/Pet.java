@@ -1,5 +1,6 @@
-package com.example.petbutler.entity;
+package com.example.petbutler.domain.user;
 
+import com.example.petbutler.domain.user.User;
 import com.example.petbutler.type.PetType;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,6 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode
 @Builder
 @Getter
 @Setter
