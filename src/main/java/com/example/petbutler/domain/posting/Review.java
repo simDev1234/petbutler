@@ -1,37 +1,35 @@
-package com.example.petbutler.entity;
+package com.example.petbutler.domain.posting;
 
-import java.time.LocalDateTime;
+import com.example.petbutler.domain.user.User;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode
 @Builder
 @Getter
 @Setter
-public class Cart {
+public class Review {
   @Id
   @GeneratedValue
   private Long id;
 
-  @OneToOne
-  @NotNull
+  @ManyToOne
   private User user;
 
-  @LastModifiedDate
-  private LocalDateTime updatedAt;
+  private String contents;
 
 }

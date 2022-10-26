@@ -1,4 +1,4 @@
-package com.example.petbutler.entity;
+package com.example.petbutler.domain.store;
 
 import com.example.petbutler.type.CategoryLevel;
 import java.time.LocalDateTime;
@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode
 @Builder
 @Getter
 @Setter

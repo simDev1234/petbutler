@@ -1,17 +1,15 @@
-package com.example.petbutler.entity;
+package com.example.petbutler.domain.store;
 
+import com.example.petbutler.domain.user.User;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,56 +21,29 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode
 @Builder
 @Getter
 @Setter
-public class Product {
+public class Order {
 
   @Id
   @GeneratedValue
   private Long id;
 
-  @NotNull
-  @ManyToOne
-  private User salesUser;
+  @OneToOne
+  private User user;
 
-  @ManyToOne
-  private Cart cart;
+  private int payment;
 
-  @ManyToOne
-  private Order order;
-
-  @NotNull
-  @ManyToOne
-  private Category category;
-
-  private String thumbnailLocalPath;
-
-  private String thumbnailUrlPath;
-
-  @NotBlank
-  private String name;
-
-  private String detailInfo;
-
-  @Min(0)
-  private long stock;
-
-  @Min(0)
-  private long numberOfsales;
-
-  @Min(0)
-  @Max(1_000_000)
-  private int discount;
-
-  @Min(0)
-  @Max(1_000_000)
-  private int price;
+  private String receiverName;
+  private String receiverPhone;
+  private String address;
+  private String address_detail;
 
   @CreatedDate
   private LocalDateTime registeredAt;
 
   @LastModifiedDate
   private LocalDateTime updatedAt;
-
 }

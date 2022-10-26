@@ -1,30 +1,34 @@
+server:
+  port: 9000
 spring:
   datasource:
     driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:test?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    url: jdbc:h2:mem:test;MODE=MYSQL;
     username: sa
-    password:
-    h2:
-      console:
-        enabled: true
+  h2:
+    console:
+      enabled: true
+    hikari:
+      jdbc-url: jdbc:h2:mem:test;MODE=MYSQL
   redis:
     host: 127.0.0.1
     port: 6379
   jpa:
     defer-datasource-initialization: true
-    database-platform: H2
+    database-platform: org.hibernate.dialect.MySQL57Dialect
+    generate-ddl: true
+    open-in-view: true
     hibernate:
-      ddl-auto: update
-    open-in-view: false
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
         show_sql: true
+        globally_quoted_identifiers: true
   mail:
     host: smtp.gmail.com
     port: 587
     username: simDev1234@gmail.com
-    password: wdrqocnckohduqzs
     properties:
       mail:
         smtp:
