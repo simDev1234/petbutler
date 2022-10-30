@@ -1,81 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>layout</title>
+  <title>nav</title>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav th:fragment="fragment-nav" class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-    <div class="container">
-      <a class="navbar-brand" href="/"><img src="../assets/images/logo-small.png" alt="logo"></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="/">홈
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/store">스토어</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/hospitalsAndPharmacy">동물병원/약국 찾기</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/postings">포스팅</a>
-          </li>
-          <li th:if="${not #strings.isEmpty(login)}" class="nav-item">
-            <a class="nav-link" href="#">마이페이지</a>
-          </li>
-          <li th:if="${#strings.isEmpty(login)}" class="nav-item">
-            <a class="nav-link" href="/users/sign-in">로그인/회원가입</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Footer Starts Here -->
-  <div th:fragment="fragment-footer" class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="footer-menu">
-            <ul>
-              <li><a href="#">홈</a></li>
-              <li><a href="#">스토어</a></li>
-              <li><a href="#">동물병원/약국 찾기</a></li>
-              <li><a href="#">포스팅</a></li>
-              <li><a href="#">마이페이지</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div th:fragment="nav">
+    <ul style = "list-style: none; text-decoration: none; color : black;">
+      <li style = "display:inline-block; width:100px; margin-right : 10px"><a href = "/users/sign-in">로그인</a></li>
+      <li style = "display:inline-block; width:100px; margin-right : 10px"><a href = "/users/customer/sign-up">일반 회원가입</a></li>
+      <li style = "display:inline-block; width:100px; margin-right : 10px"><a href = "/users/seller/sign-up">셀러 회원가입</a></li>
+    </ul>
   </div>
-  <!-- Footer Ends Here -->
-
-  <!-- Sub Footer Starts Here -->
-  <div th:fragment="fragment-sub-footer" class="sub-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="copyright-text">
-            <p>Copyright &copy; 2019 Company Name
-
-              - Design: <a rel="nofollow" href="https://www.facebook.com/tooplate">Tooplate</a>
-              - Develop: <a rel="simDev1234" href="https://github.com/simDev1234/petbutler">simDev1234</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Sub Footer Ends Here -->
-
 </body>
 </html>
