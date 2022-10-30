@@ -1,12 +1,14 @@
 package com.example.petbutler.config;
 
-import com.example.petbutler.service.SellerService;
+import com.example.petbutler.repository.CustomerRepository;
+import com.example.petbutler.service.CustomerService;
 import com.example.petbutler.type.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -14,13 +16,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class CustomerSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private final SellerService sellerService;
+  private final CustomerService customerService;
 
-  /**
-   * Http Security
-   */
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
@@ -54,31 +54,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   }
 
-  /**
-   * Authentication (인증)
-   */
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-    auth.userDetailsService(sellerService)
+    auth.userDetailsService(customerService)
         .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
 
     super.configure(auth);
   }
-
-  /**
-   * Web Recourse Security
-   */
-  @Override
-  public void configure(WebSecurity web) throws Exception {
-
-    web.ignoring()
-        .antMatchers("/","/*.html","/**/*.html", "/*.png", "/**/*.png", "/*.jpg",
-                      "/**/*.jpg","/**/*.css", "/*.js", "/**/*.js");
-
-    super.configure(web);
-  }
-
-
-
 }

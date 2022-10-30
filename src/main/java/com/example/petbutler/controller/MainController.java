@@ -11,8 +11,6 @@ public class MainController {
 
   /**
    * 메인페이지 이동
-   * - 로그인 정보 있을 경우 메뉴에 '마이페이지' 노출
-   * - 로그인 정보 없을 경우 '로그인/회원가입' 노출
    */
   @GetMapping("/")
   public String index(Principal principal, Model model){
@@ -22,6 +20,16 @@ public class MainController {
     }
 
     return "index";
+  }
+
+  /**
+   * 로그인 페이지 이동
+   */
+  @GetMapping("/users/sign-in")
+  public String getSignInPage() {
+
+    return "users/sign-in";
+
   }
 
 }
