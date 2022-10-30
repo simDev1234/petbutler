@@ -1,4 +1,4 @@
-package com.example.petbutler.type;
+package com.example.petbutler.exception.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +15,13 @@ public enum ErrorCode {
   USER_STATUS_STOP("정지된 아이디입니다.", HttpStatus.BAD_REQUEST),
   EMAIL_SEND_ERROR("이메일 전송 중 문제가 발생했습니다. 다른 메일을 사용해주세요", HttpStatus.BAD_REQUEST),
   INVALID_REQUEST("요청 사항이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
-  INTERNAL_SERVER_ERROR("요청 중 서버 내부에 문제가 발생했습니다.", HttpStatus.BAD_REQUEST);
+  INTERNAL_SERVER_ERROR("요청 중 서버 내부에 문제가 발생했습니다.", HttpStatus.BAD_REQUEST),
+  USER_REGISTER_NOT_ENOUGH_DATA("필수 입력 사항이 입력되지 않았습니다.", HttpStatus.BAD_REQUEST),
+
+  FILE_CONTENTS_NOT_EXIST("파일이 존재하지 않습니다.",
+
+  HttpStatus.BAD_REQUEST), USER_SIGN_UP_FAIL("회원 가입에 실패하였습니다.", HttpStatus.BAD_REQUEST),
+  PET_REGISTER_NOT_ENOUGH_DATA("필수 입력 사항이 입력되지 않았습니다.", HttpStatus.BAD_REQUEST);
 
   private String message;
   private HttpStatus httpStatus;
