@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,27 +33,24 @@ public class PetServiceImpl implements PetService {
    */
   @Override
   @Transactional
-  public void registerPetsWhenSignUp(Customer customer, PetDto[] petDtos, MultipartFile[] files) throws IOException {
+  public boolean registerPetsWhenSignUp(Customer customer, PetDto[] petDtos, MultipartFile[] files) {
 
-    // copy thumbnail & transform data type
-    Pet[] pets = Pet.from(customer, petDtos, copyAndPasteThumbnailFiles(files));
+    try{
+      // copy thumbnail & transform data type
+      Pet[] pets = Pet.from(customer, petDtos, copyAndPasteThumbnailFiles(files));
 
-    // validation
-    validateRegisterPetsWithSignUp(pets);
-    
-    // save pets
-    for (Pet pet : pets){
-      petRepository.save(pet);
-    }
+      for (Pet pet : pets){
+        // validate if name exists
+        if (pet.getName() == null || "".equals(pet.getName())) {
+          return false;
+        }
+        // save pets
+        petRepository.save(pet);
+      }
+      return true;
 
-  }
-
-  private static void validateRegisterPetsWithSignUp(Pet[] pets) {
-
-    int count = (int) Arrays.stream(pets).filter(p -> p.getName() == null || "".equals(p.getName())).count();
-
-    if (count > 0) {
-      throw new ButlerUserException(ErrorCode.PET_REGISTER_NOT_ENOUGH_DATA);
+    } catch(IOException e){
+      return false;
     }
 
   }
