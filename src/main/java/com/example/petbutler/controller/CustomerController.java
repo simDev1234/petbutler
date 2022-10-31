@@ -8,6 +8,7 @@ import com.example.petbutler.service.PetService;
 import java.io.IOException;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,30 +38,17 @@ public class CustomerController {
   /**
    * 회원 가입
    */
-  @PostMapping(value = "/users/customer/sign-up")
+  @PostMapping(value = "/users/customer/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public String signUpByEmail(CustomerSignUpForm form,
                               @RequestParam("thumbnail") MultipartFile[] files,
                               @RequestParam("kind") String[] kinds,
                               @RequestParam("name") String[] names,
                               Model model) {
 
-    try {
+    // sign up
+    Customer customer = customerService.signUpByEmail(form, PetDto.of(kinds, names), files);
 
-      // sign up
-      Customer customer = customerService.signUpByEmail(form);
-
-      // register pets
-      if (Objects.nonNull(names) && names.length > 0) {
-        petService.registerPetsWhenSignUp(customer, PetDto.of(kinds, names), files);
-      }
-
-      model.addAttribute("email", customer.getEmail());
-
-    } catch (IOException e) {
-
-      model.addAttribute("error", e.getMessage());
-
-    }
+    model.addAttribute("email", customer.getEmail());
 
     return "users/sign-up-complete";
 
@@ -72,11 +60,12 @@ public class CustomerController {
    * 이메일 인증
    */
   @GetMapping("/users/customer/email-auth")
-  public String authorizeUserByEmail(@RequestParam(name = "authKey") String emailAuthKey) {
+  public String authorizeUserByEmail(@RequestParam(name = "authKey") String emailAuthKey,
+                                     @RequestParam(name = "mapping-path") String mappingPath) {
 
     customerService.emailAuth(emailAuthKey);
 
-    return "users/customer/register-pets";
+    return mappingPath;
 
   }
 

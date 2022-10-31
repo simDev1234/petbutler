@@ -50,7 +50,7 @@ public class SellerServiceImpl implements SellerService {
   public void sendEmailToUser(String email, String emailAuthKey) throws MailSendException {
 
     String subject = "[팻집사] 회원가입에 감사드립니다.";
-    String contents = emailSendUtils.getWelcomeHTML(emailAuthKey, UserRole.ROLE_SELLER);
+    String contents = emailSendUtils.getSellerWelcomeHTML(emailAuthKey);
 
     emailSendUtils.sendMail(email, subject, contents);
   }
