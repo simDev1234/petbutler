@@ -20,8 +20,7 @@ public enum ErrorCode {
 
   FILE_CONTENTS_NOT_EXIST("파일이 존재하지 않습니다.",
 
-  HttpStatus.BAD_REQUEST), USER_SIGN_UP_FAIL("회원 가입에 실패하였습니다.", HttpStatus.BAD_REQUEST),
-  PET_REGISTER_NOT_ENOUGH_DATA("필수 입력 사항이 입력되지 않았습니다.", HttpStatus.BAD_REQUEST);
+  HttpStatus.BAD_REQUEST), USER_SIGN_UP_FAIL("회원 가입에 실패하였습니다.", HttpStatus.BAD_REQUEST);
 
   private String message;
   private HttpStatus httpStatus;

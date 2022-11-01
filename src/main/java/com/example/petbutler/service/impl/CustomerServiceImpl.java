@@ -1,14 +1,13 @@
 package com.example.petbutler.service.impl;
 
 import com.example.petbutler.dto.CustomerSignUpForm;
-import com.example.petbutler.dto.PetDto;
+import com.example.petbutler.dto.PetRegisterForm;
 import com.example.petbutler.entity.Customer;
 import com.example.petbutler.exception.ButlerUserException;
 import com.example.petbutler.exception.type.ErrorCode;
 import com.example.petbutler.repository.CustomerRepository;
 import com.example.petbutler.service.CustomerService;
 import com.example.petbutler.service.PetService;
-import com.example.petbutler.type.UserRole;
 import com.example.petbutler.utils.EmailSendUtils;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -28,30 +26,17 @@ public class CustomerServiceImpl implements CustomerService {
 
   private final EmailSendUtils emailSendUtils;
 
-  private final PetService petService;
-
   /**
    * 고객 회원가입
    * - 반려동물이 등록되지 않아도 회원가입은 완료한다.
    */
   @Override
   @Transactional
-  public Customer signUpByEmail(CustomerSignUpForm form, PetDto[] petDtos, MultipartFile[] files)
-                                throws ButlerUserException {
+  public Customer signUpByEmail(CustomerSignUpForm customerSignUpForm) throws ButlerUserException {
 
-    validateSignUpByEmail(form.getEmail());
+    validateSignUpByEmail(customerSignUpForm.getEmail());
 
-    // register customer
-    Customer customer = customerRepository.save(Customer.from(form));
-
-    // register pets
-    if (petService.registerPetsWhenSignUp(customer, petDtos, files)) {
-      // send auth email - with get register-pet mapping
-      sendEmailToUser(customer.getEmail(), customer.getEmailAuthKey(), "/users/customer/register-pet");
-    } else {
-      // send auth email - with get sign-in mapping
-      sendEmailToUser(customer.getEmail(), customer.getEmailAuthKey(), "/users/sign-in");
-    }
+    Customer customer = customerRepository.save(Customer.from(customerSignUpForm));
 
     return customer;
   }

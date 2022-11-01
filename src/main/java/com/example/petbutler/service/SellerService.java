@@ -2,7 +2,6 @@ package com.example.petbutler.service;
 
 import com.example.petbutler.dto.SellerSignUpForm;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Service;
 
 public interface SellerService extends UserDetailsService {
 

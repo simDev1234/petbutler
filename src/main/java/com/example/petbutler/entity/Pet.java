@@ -1,8 +1,5 @@
 package com.example.petbutler.entity;
 
-import com.example.petbutler.dto.PetDto;
-import com.example.petbutler.utils.FilePath;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,20 +38,4 @@ public class Pet extends BaseEntity{
 
   private String name;
 
-  public static Pet[] from(Customer customer, PetDto[] petDtos, List<FilePath> filePaths) {
-
-    Pet[] pets = new Pet[petDtos.length];
-
-    for (int i = 0; i < petDtos.length; i++) {
-      pets[i] = Pet.builder()
-          .customer(customer)
-          .thumbnailLocalPath(filePaths.get(i).getLocalPath())
-          .thumbnailUrlPath(filePaths.get(i).getUrlPath())
-          .kind(petDtos[i].getKind())
-          .name(petDtos[i].getName())
-          .build();
-    }
-
-    return pets;
-  }
 }

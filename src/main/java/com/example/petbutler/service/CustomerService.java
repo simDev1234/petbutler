@@ -1,14 +1,13 @@
 package com.example.petbutler.service;
 
 import com.example.petbutler.dto.CustomerSignUpForm;
-import com.example.petbutler.dto.PetDto;
 import com.example.petbutler.entity.Customer;
+import com.example.petbutler.exception.ButlerUserException;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface CustomerService extends UserDetailsService {
 
-  Customer signUpByEmail(CustomerSignUpForm form, PetDto[] petDtos, MultipartFile[] files);
+  Customer signUpByEmail(CustomerSignUpForm customerSignUpForm) throws ButlerUserException;
 
   void emailAuth(String emailAuthKey);
 

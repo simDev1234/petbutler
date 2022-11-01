@@ -1,7 +1,5 @@
 package com.example.petbutler.dto;
 
-import com.example.petbutler.entity.Pet;
-import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,5 +25,6 @@ public class CustomerSignUpForm {
 
   @NotNull
   private int butlerLevel;
+
 
 }

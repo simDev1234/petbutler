@@ -1,12 +1,11 @@
 package com.example.petbutler.controller;
 
 import com.example.petbutler.dto.CustomerSignUpForm;
-import com.example.petbutler.dto.PetDto;
+import com.example.petbutler.dto.PetRegisterForm;
 import com.example.petbutler.entity.Customer;
 import com.example.petbutler.service.CustomerService;
 import com.example.petbutler.service.PetService;
 import java.io.IOException;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequiredArgsConstructor
@@ -39,22 +37,32 @@ public class CustomerController {
    * 회원 가입
    */
   @PostMapping(value = "/users/customer/sign-up", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public String signUpByEmail(CustomerSignUpForm form,
-                              @RequestParam("thumbnail") MultipartFile[] files,
-                              @RequestParam("kind") String[] kinds,
-                              @RequestParam("name") String[] names,
-                              Model model) {
+  public String signUpByEmail(CustomerSignUpForm customerSignUpForm,
+                              PetRegisterForm petRegisterForm, Model model) {
 
-    // sign up
-    Customer customer = customerService.signUpByEmail(form, PetDto.of(kinds, names), files);
+    // register user
+    Customer customer = customerService.signUpByEmail(customerSignUpForm);
+
+    try {
+
+      // register pets
+      petService.registerPetsWhenSignUp(customer, petRegisterForm);
+
+      // if success -> send auth email with "sign-in" page mapping
+      customerService.sendEmailToUser(customer.getEmail(), customer.getEmailAuthKey(), "/users/sign-in");
+
+    } catch(IOException e) {
+
+      // if fail    -> send auth email with "register-pet" page mapping
+      customerService.sendEmailToUser(customer.getEmail(), customer.getEmailAuthKey(), "/users/customer/register-pet");
+
+    }
 
     model.addAttribute("email", customer.getEmail());
 
     return "users/sign-up-complete";
 
   }
-
-
 
   /**
    * 이메일 인증
