@@ -1,9 +1,11 @@
 package com.example.petbutler.config;
 
-import com.example.petbutler.service.SellerService;
-import com.example.petbutler.type.UserRole;
+import com.example.petbutler.repository.SellerRepository;
+import com.example.petbutler.service.impl.SellerServiceImpl;
+import com.example.petbutler.utils.EmailSendUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -14,9 +16,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class SellerSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  private final SellerService sellerService;
+  private final SellerRepository sellerRepository;
+
+  private final EmailSendUtils emailSendUtils;
 
   /**
    * Http Security
@@ -37,10 +42,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         )
         .permitAll();
 
-    http.authorizeRequests()
-        .antMatchers("/admin/**")
-        .hasAuthority(UserRole.ROLE_CUSTOMER.name());
-
     http.formLogin()
         .loginPage("/users/sign-in")
         .defaultSuccessUrl("/")
@@ -60,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-    auth.userDetailsService(sellerService)
+    auth.userDetailsService(new SellerServiceImpl(sellerRepository, emailSendUtils))
         .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder());
 
     super.configure(auth);
@@ -74,11 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     web.ignoring()
         .antMatchers("/","/*.html","/**/*.html", "/*.png", "/**/*.png", "/*.jpg",
-                      "/**/*.jpg","/**/*.css", "/*.js", "/**/*.js");
+            "/**/*.jpg","/**/*.css", "/*.js", "/**/*.js");
 
     super.configure(web);
   }
-
-
 
 }
