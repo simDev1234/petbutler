@@ -19,4 +19,8 @@ public class ServerPropertyConfig {
 
   private String address = String.format("http://%s:%d", ip, port);
 
+  private String petThumbnailLocalRoot = "C:\\sebinSample\\petbutler\\src\\main\\resources\\static\\files";
+
+  private String petThumbnailUrlRoot = "/files";
+
 }
