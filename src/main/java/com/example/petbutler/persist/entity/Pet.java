@@ -1,4 +1,4 @@
-package com.example.petbutler.entity;
+package com.example.petbutler.persist.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +28,7 @@ public class Pet extends BaseEntity{
 
   @ManyToOne
   @JoinColumn
-  private Customer customer;
+  private User user;
 
   private String thumbnailLocalPath;
 

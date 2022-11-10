@@ -1,4 +1,4 @@
-package com.example.petbutler.dto;
+package com.example.petbutler.model;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,7 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CustomerSignUpForm {
+
+public class UserSignUpForm {
 
   @NotBlank
   private String email;

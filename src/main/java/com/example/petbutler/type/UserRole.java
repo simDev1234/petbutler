@@ -7,13 +7,22 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum UserRole {
 
-  ROLE_CUSTOMER("구매자"),
-  ROLE_SELLER("판매자"),
+  ROLE_REGULAR("일반 회원"),
   ROLE_ADMIN("관리자");
 
   private final String description;
 
-  public String asString() {
-    return this.name().substring(5);
+  public static UserRole findUserRole(String userRole) {
+
+    if (UserRole.ROLE_REGULAR.isEqual(userRole)) {
+      return ROLE_REGULAR;
+    } else {
+      return ROLE_ADMIN;
+    }
+
+  }
+
+  public boolean isEqual(String userRole) {
+    return this.name().equals(userRole);
   }
 }

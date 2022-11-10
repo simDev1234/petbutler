@@ -1,8 +1,9 @@
-package com.example.petbutler.entity;
+package com.example.petbutler.persist.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa
@@ -11,6 +12,7 @@ import org.springframework.data.jpa
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 public class BaseEntity {
 
   @CreatedDate

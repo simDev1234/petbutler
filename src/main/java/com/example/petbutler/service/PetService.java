@@ -1,9 +1,10 @@
 package com.example.petbutler.service;
 
-import com.example.petbutler.dto.PetRegisterForm;
-import com.example.petbutler.entity.Customer;
-import java.io.IOException;
+import com.example.petbutler.model.PetRegisterForm;
+import com.example.petbutler.persist.entity.User;
 
 public interface PetService {
-  void registerPetsWhenSignUp(Customer customer, PetRegisterForm petRegisterForm) throws IOException;
+  void registerPetsWhenSignUp(User user, PetRegisterForm petRegisterForm);
+
+  boolean registerPetsAfterSignUp(String email, PetRegisterForm petRegisterForm);
 }

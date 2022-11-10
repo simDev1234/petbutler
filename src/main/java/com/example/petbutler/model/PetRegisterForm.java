@@ -1,11 +1,12 @@
-package com.example.petbutler.dto;
+package com.example.petbutler.model;
 
-import com.example.petbutler.entity.Customer;
-import com.example.petbutler.entity.Pet;
+import com.example.petbutler.persist.entity.User;
+import com.example.petbutler.persist.entity.Pet;
 import com.example.petbutler.utils.FilePath;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class PetRegisterForm {
 
   private MultipartFile[] thumbnail;
@@ -23,14 +25,14 @@ public class PetRegisterForm {
 
   private String[] name;
 
-  public List<Pet> toPets(Customer customer, List<FilePath> newFilePaths) {
+  public List<Pet> toPets(User user, List<FilePath> newFilePaths) {
 
     List<Pet> pets = new ArrayList();
 
     for (int i = 0; i < this.name.length; i++) {
 
       pets.add(Pet.builder()
-                  .customer(customer)
+                  .user(user)
                   .kind(this.kind[i])
                   .name(this.kind[i])
                   .thumbnailLocalPath(newFilePaths.get(i).getLocalPath())
