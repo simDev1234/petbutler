@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/popup.css">
+  <link rel="stylesheet" href="/css/sign-up-email.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div th:replace="/fragments/layout.html::#header"></div>
+    <div th:if="${#strings.isEmpty(email)}">
+      <div th:replace="/fragments/layout.html::#userNav-before"></div>
+    </div>
+    <div th:if="${not #strings.isEmpty(email)}">
+      <div th:replace="/fragments/layout.html::#userNav-after"></div>
+    </div>
+  </header>
+
+  <!-- Popup -->
+  <div th:if="${not #strings.isEmpty(popupMsg)}" id = popup>
+    <h3 th:text="${popupTitle}">타이틀</h3>
+    <p th:text="${popupMsg}">내용<a id = "close-x" href = "#">x</a></p>
+  </div>
+
+  <!-- Register Pet Form -->
+  <div class = "content-box">
+    <div class = "content">
+      <h2>반려동물 정보 입력</h2>
+      <form method = "post" actions = "/user/sign-up" enctype="multipart/form-data">
+        <fieldset id="pets">
+          <legend>사랑스런 내 새꾸들을 등록해주세요</legend>
+        </fieldset>
+        <input type="button" value="Add a field" class="add" id="add"/>
+        <button onclick="return register()">등록</button>
+      </form>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script src="/js/common.js"></script>
+  <script rel="script" src="/js/register-pets.js"></script>
+  <script>
+
+  /* 반려동물 등록 유효성 체크 */
+  function petNameExistCheck(){
+
+    let count = $("input.name").filter((name) => name.val() == null || name.val() == "").count();
+
+    if (count > 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async function register() {
+
+    /* 반려동물 등록 유효성 체크 (이름 필수 기재) */
+    if (petNameExistCheck() == false) {
+
+      alert("반려동물의 이름은 필수 입력사항입니다.");
+
+      return false;
+    }
+
+    /* 반려 동물 정보 */
+    $("input.thumbnail").forEach((thumb) => formData.append("thumbnail", thumb.files[0]));
+    $("input.kind").forEach((kind) => formData.append("kind", kind.val()));
+    $("input.name").forEach((name) => formData.append("name", name.val()));
+
+    /* http request - post */
+    const url = '/user/register-pet';
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      },
+    };
+
+    await axios.post(url, formData, config).then(function (response) {
+
+      // 정상적일 때
+      alert('회원 가입이 정상적으로 완료되었습니다.');
+      location.href = '/';
+
+    }).catch(function (err) {
+      console.log(err);
+    });
+
+  }
+</script>
+</body>
+</html>

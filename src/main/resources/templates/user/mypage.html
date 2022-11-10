@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>회원 가입 완료</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    table{
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border : 1px solid black;
+    }
+    th { width : 100px; }
+    td { width : 200px; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="/fragments/layout.html::#header"></div>
+
+  <!-- User info -->
+  <div id = "user-box">
+    <table>
+      <tr>
+        <th>아이디</th>
+        <td id = email th:text="${detail.email}">test@gmail.com</td>
+      </tr>
+      <tr>
+        <th>집사레벨</th>
+        <td th:if="${#strings.equals(detail.butlerLevel, 0)}">
+          <select>
+            <option value="">선택</option>
+            <option value="1">1년 미만</option>
+            <option value="2">2년</option>
+            <option value="3">3년</option>
+            <option value="4">4년</option>
+            <option value="5">5년</option>
+            <option value="직접입력">5년+</option>
+          </select>
+          <input type="text" id="butlerLevel" name="butlerLevel" readonly>
+        </td>
+      </tr>
+      <tr>
+        <th>핸드폰번호</th>
+        <td><input id = "phone" th:value="${detail.phone}" value = 010-1234-5678></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="border:none; text-align: right">
+          <input type = "button" id = update value = "수정" onclick="update()">
+          <input type = "button" id = delete value = "탈퇴" onclick="location.href='/users/user/withdraw'">
+        </td>
+      </tr>
+    </table>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"/>
+  <script src="/js/common.js"></script>
+  <script>
+
+    /* 집사 경력 셀렉박스 */
+    $("select").on('change',function(){
+
+    $("#butlerLevel").attr('placeholder',this.value);
+
+      if (this.value == '직접입력') {
+        $("#butlerLevel").attr('readonly',false);
+        $("#butlerLevel").focus();
+      } else {
+        $("#butlerLevel").attr('readonly',true);
+        $("#butlerLevel").val(this.value);
+      }
+
+    });
+
+    function update(){
+
+      const url = '/user/mypage';
+      const config = {
+        headers:{
+          "Content-Type":"application/json"
+        }
+      }
+
+      const data = {
+        butlerLevel: $("#butlerLevel").val(),
+        phone: $("#phone").val()
+      }
+
+      axios.put(url, qs.stringify(data), config)
+        .then((res) => {
+        console.log(res)
+      })
+        .catch((error) => {
+        console.log(error.response)
+      })
+
+    }
+  </script>
+
+</body>
+</html>
