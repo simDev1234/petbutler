@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>회원관리</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    .detail{
+      margin:100px auto auto auto;
+      width : 800px;
+      text-align: center;
+    }
+
+    table {
+      width : 100%;
+      margin-top:5px;
+      border-collapse: collapse;
+    }
+
+    fieldset{
+      margin-bottom:10px;
+    }
+
+    legend{
+      text-align: left;
+      background-color: black;
+      color:white;
+      padding: 0px 10px;
+      font-size:15px;
+    }
+
+    th,td{
+      border : 1px solid black;
+    }
+
+    th {
+      background-color: silver;
+    }
+
+    .buttons{
+      text-align: right;
+    }
+
+    h3{
+      text-align: left;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+<!--  <header>-->
+<!--    <div th:replace="/admin/fragments/layout.html::#header"></div>-->
+<!--    <div>-->
+<!--      <div th:replace="/admin/fragments/layout.html::#userNav"></div>-->
+<!--    </div>-->
+<!--  </header>-->
+
+  <!-- content -->
+  <div class = "content-box detail">
+    <form id = "detail-form">
+      <fieldset>
+        <legend>회원정보</legend>
+        <table>
+          <tr>
+            <th>아이디</th>
+            <td id = "email" th:text="${user.email}">test@gmail.com</td>
+          </tr>
+          <tr>
+            <th>연락처</th>
+            <td><input name = "phone" th:value="${user.phone}"></td>
+          </tr>
+          <tr>
+            <th>회원상태</th>
+            <td>
+              <select name = "userStatus">
+                <option value = "NOT_AUTHORIZED" th:selected="${#strings.equals(user.userStatus, 'NOT_AUTHORIZED')}">미인증</option>
+                <option value = "IN_USE" th:selected="${#strings.equals(user.userStatus, 'IN_USE')}">활성화</option>
+                <option value = "STOPPED" th:selected="${#strings.equals(user.userStatus, 'STOPPED')}">정지</option>
+                <option value = "WITHDRAW" th:selected="${#strings.equals(user.userStatus, 'WITHDRAW')}">탈퇴</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>회원등급</th>
+            <td>
+              <select name = "userRole">
+                <option value = "ROLE_REGULAR" th:selected="${#strings.equals(user.userRole, 'ROLE_REGULAR')}">일반 회원</option>
+                <option value = "ROLE_ADMIN" th:selected="${#strings.equals(user.userRole, 'ROLE_ADMIN')}">관리자</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>집사레벨</th>
+            <td th:text="${user.butlerLevel}">1</td>
+          </tr>
+          <tr>
+            <th>등록일</th>
+            <td th:text="${user.registeredAt}">2022-10-22</td>
+          </tr>
+          <tr>
+            <th>수정일</th>
+            <td th:text="${user.updatedAt}">2022-11-11</td>
+          </tr>
+        </table>
+      </fieldset>
+      <fieldset>
+        <legend>팻 정보</legend>
+        <div th:each="pet : ${user.pets}">
+          <h3 th:text="${pet.name}">봄이</h3>
+          <table>
+            <tr>
+              <th>종구분</th>
+              <td th:text="${pet.kind}">고양이</td>
+            </tr>
+            <tr>
+              <th>썸네일</th>
+              <td><img th:src="${pet.thumbnailUrlPath}"></td>
+            </tr>
+          </table>
+        </div>
+        <div th:if="${user.pets == null}">
+          등록된 팻이 없습니다.
+        </div>
+      </fieldset>
+      <div class = "buttons">
+        <input id = "update" type = "button" value = "수정">
+        <input id = "list" type = "button" value = "목록" onclick="location.href = '/admin/user/list.do'">
+      </div>
+    </form>
+  </div>
+  <footer>
+    <div class = "content">
+      <h3>프로젝트 개요</h3>
+      <p>작업자 : simDev1234@gmail.com</p>
+      <p>깃허브 : <a href = "https://github.com/simDev1234">https://github.com/simDev1234</a></p>
+      <p>티스토리 : <a href = "https://why-dev.tistory.com/" target="_blank">https://why-dev.tistory.com/</a></p>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script src="/js/common.js"></script>
+  <script>
+    $(function(){
+
+      $("#update").on('click', function(){
+
+        const url = '/admin/user/update.do';
+        const config = {
+          headers: {
+            "Content-Type": "application/json"
+          },
+        };
+
+        const formData = new FormData();
+        const email = $("#email").text();
+        formData.append("email", email);
+        formData.append("userStatus", $("select[name = userStatus] option:selected").val());
+        formData.append("userRole", $("select[name = userRole] option:selected").val());
+        formData.append("phone", $("input[name=phone]").val());
+
+        axios.patch(url, formData, config).then(function (response) {
+
+          // 정상적일 때
+          location.href = "/admin/user/list.do";
+
+        }).catch(function (err) {
+          console.log(err);
+        });
+
+      });
+
+    });
+  </script>
+</body>
+</html>
