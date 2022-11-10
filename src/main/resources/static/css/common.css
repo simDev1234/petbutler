@@ -1,0 +1,125 @@
+/* common */
+body {
+  width : 100%;
+  margin : 50px 0;
+  padding : 0;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  cursor:pointer;
+}
+
+/* header */
+#header{
+  background-color:cornflowerblue;
+  width : 100%;
+  height : 50px;
+  margin : 0;
+  position: absolute;
+  top : 0;
+  left : 0;
+}
+
+#logo {
+  padding-left: 20px;
+  box-sizing: border-box;
+}
+
+#logo a{
+  display: inline-block;
+}
+
+.menu {
+  position:absolute;
+  top : 12px;
+  left : 100px;
+}
+
+.menu ul {
+  height : 50px;
+  margin:0;
+}
+
+.menu ul li {
+  display : inline-block;
+  margin-right : 20px;
+}
+
+.menu ul li a {
+  color : white;
+}
+
+.userNav {
+   width : 600px;
+   height : 50px;
+   position: absolute;
+   margin:0;
+   top: 15px;
+   right: 20px;
+   text-align: right;
+ }
+
+.userNav li {
+  display : inline-block;
+}
+
+.userNav li a {
+  color : white;
+  display: inline-block;
+  background-color: black;
+  width : 100px;
+  text-align: center;
+}
+
+.mode {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+}
+
+/* content */
+
+.content{
+  width : 1200px;
+  margin : auto;
+  padding : 10px;
+  box-sizing: border-box;
+}
+
+.intro {
+
+}
+
+.list{
+  padding : 0;
+}
+
+.list li {
+  display: inline-block;
+  width : 250px;
+  margin-right : 20px;
+}
+
+.seller {
+  background-color: lightblue;
+}
+
+/* footer */
+
+footer {
+  background-color: cornflowerblue;
+  color : white;
+}
+
+footer h3 {
+  font-size : 16px;
+}
+
+footer p {
+  font-size : 12px;
+}
