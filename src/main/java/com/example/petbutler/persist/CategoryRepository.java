@@ -36,8 +36,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
          nativeQuery = true)
   int findDivisionMax(String division);
 
-  @Query(value = "select distinct c.name from Category c where c.division = ?1", nativeQuery = true)
+  @Query(value = "select distinct c.name from category c where c.division = ?1", nativeQuery = true)
   List<String> findDistinctNameByDivision(String division);
+
+  List<Category> findAllByDivision(Division division);
 
   Page<Category> findAll(Pageable pageable);
 

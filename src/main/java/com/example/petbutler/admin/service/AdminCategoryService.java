@@ -13,4 +13,5 @@ public interface AdminCategoryService {
   void deleteCategory(String code);
 
   AdminCategoryForm getCategoryList(AdminCategoryForm form, Pageable pageable);
+
 }

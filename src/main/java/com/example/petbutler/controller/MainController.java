@@ -1,6 +1,7 @@
 package com.example.petbutler.controller;
 
 import java.security.Principal;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

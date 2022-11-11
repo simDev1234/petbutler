@@ -26,11 +26,14 @@ public class Product extends BaseEntity{
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String categoryCode;
+  private String categoryMainCode;
+  private String categoryMediumCode;
+  private String categorySmallCode;
 
   private String thumbnailLocalPath;
   private String thumbnailUrlPath;
 
+  private String brand;
   private String name;
 
   private int price;

@@ -28,8 +28,7 @@ public class AdminCategoryController {
    * 카테고리 조회
    */
   @GetMapping("/list.do")
-  public String getCategoryList(AdminCategoryForm form,
-                                @PageableDefault Pageable pageable, Model model){
+  public String getCategoryList(AdminCategoryForm form, Pageable pageable, Model model){
 
     form = adminCategoryService.getCategoryList(form, pageable);
 

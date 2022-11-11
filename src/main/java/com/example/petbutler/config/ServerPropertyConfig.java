@@ -5,8 +5,6 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/* 이메일 인증 시 서버 주소 필요하여 별도로 서버 설정 */
-/* rf. https://www.baeldung.com/spring-boot-configuration-metadata */
 @Configuration
 @ConfigurationProperties(prefix = "server")
 @Getter

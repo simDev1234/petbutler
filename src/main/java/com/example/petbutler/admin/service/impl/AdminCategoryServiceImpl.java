@@ -25,7 +25,11 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
   private final ProductRepository productRepository;
 
+  /**
+   * 카테고리 조회
+   */
   @Override
+  @Transactional
   public AdminCategoryForm getCategoryList(AdminCategoryForm form, Pageable pageable) {
 
     // 검색 필터링에 따른 페이징 결과
@@ -50,9 +54,22 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     // 각 분류별 카테고리 코드 영역이 일치하는 상품의 갯수 정리
     categories.forEach(c -> {
 
+      Division division = c.getDivision();
       String code = c.getCode();
 
-      result.put(code, productRepository.countProductByCategoryCode(code, Division.getDivisionLen(code)));
+      if (Division.MAIN.equals(division)) {
+
+        result.put(code, productRepository.countAllByCategoryMainCode(code));
+
+      } else if (Division.MEDIUM.equals(division)) {
+
+        result.put(code, productRepository.countAllByCategoryMediumCode(code));
+
+      } else {
+
+        result.put(code, productRepository.countAllByCategorySmallCode(code));
+
+      }
 
     });
 
@@ -60,7 +77,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
   }
 
-  private void setDivisionList(AdminCategoryForm form) {
+  public void setDivisionList(AdminCategoryForm form) {
     
     List<String> mains   = categoryRepository.findDistinctNameByDivision(Division.MAIN.name());
     List<String> mediums = categoryRepository.findDistinctNameByDivision(Division.MEDIUM.name());
@@ -209,8 +226,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
   /**
    * 카테고리 삭제
    * - 해당 분류 코드 카테고리가 없는 경우,
-   *   연결된 상품이 한 개 이상 있고
-   *   해당 상품에 재고가 하나라도 있는 경우, 실패 응답
+   *   연결된 상품이 한 개 이상 있는 경우, 실패 응답
    */
   @Override
   @Transactional
@@ -219,17 +235,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     Category category = categoryRepository.findByCode(code)
         .orElseThrow(() -> new ButlerCategoryException(ErrorCode.CATEGORY_NOT_FOUND));
 
-    validateIfAtLeastOneProductInCategory(code);
-
     categoryRepository.delete(category);
-
-  }
-
-  private void validateIfAtLeastOneProductInCategory(String code) {
-
-    if (productRepository.existsAllByCategoryCodeAndStockGreaterThan(code, Division.getDivisionLen(code))) {
-      throw new ButlerCategoryException(ErrorCode.CATEGORY_HAS_PRODUCT);
-    }
 
   }
 

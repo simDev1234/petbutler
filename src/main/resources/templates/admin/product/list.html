@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>회원관리</title>
+  <title>상품관리</title>
   <link rel="stylesheet" href="/css/common.css">
   <style>
     .list{
@@ -11,8 +11,20 @@
       text-align: center;
     }
 
+    .box {
+      margin:0;
+      padding:0;
+      box-sizing: border-box;
+    }
+
     .search-box{
-      text-align: right;
+      width : 800px;
+      text-align:left;
+    }
+
+    .description p {
+      font-size : 12px;
+      text-align: left;
     }
 
     table {
@@ -23,6 +35,17 @@
 
     th,td{
       border : 1px solid black;
+      text-indent: 10px;
+      padding : 2px;
+      box-sizing: border-box;
+    }
+
+    th{
+      background-color: silver;
+    }
+
+    .pagination{
+      position: relative;
     }
 
     .pagination li {
@@ -43,72 +66,111 @@
       display: block;
       cursor:pointer;
     }
+
+    .pagination #register-btn{
+      position: absolute;
+      right : 0; top: 0;
+    }
   </style>
 </head>
 <body>
 
   <!-- Header -->
-<!--  <header>-->
-<!--    <div th:replace="/admin/fragments/layout.html::#header"></div>-->
-<!--    <div>-->
-<!--      <div th:replace="/admin/fragments/layout.html::#userNav"></div>-->
-<!--    </div>-->
-<!--  </header>-->
+  <header>
+    <div th:replace="/admin/fragments/layout.html::#header"></div>
+    <div>
+      <div th:replace="/admin/fragments/layout.html::#userNav"></div>
+    </div>
+  </header>
 
   <!-- content -->
   <div class = "content-box list">
-    <form id = "list-form" method = "get" action = "/admin/user/list.do">
-      <div class = "search-box">
-        <select name = "searchKey">
-          <option value = "all" th:selected="${#strings.equals(searchKey, 'all')}">전체</option>
-          <option value = "regular" th:selected="${#strings.equals(searchKey, 'regular')}">일반회원</option>
-          <option value = "admin" th:selected="${#strings.equals(searchKey, 'admin')}">관리자</option>
-        </select>
-        <input name = "searchValue" type="text" placeholder="검색어 입력" th:value="${searchValue}">
-        <input type="submit" value = "검색">
-      </div>
-      <table>
-        <tr>
-          <th>아이디</th>
-          <th>연락처</th>
-          <th>회원상태</th>
-          <th>회원등급</th>
-          <th>집사레벨</th>
-          <th>등록일</th>
-          <th>수정일</th>
-        </tr>
-        <tr th:each="user : ${pageResult}">
-          <td><a th:text="${user.email}" th:href = "'/admin/user/detail.do?email=' + ${user.email}">test@gmail.com</a></td>
-          <td th:text="${user.phone}">010-1234-5678</td>
-          <td th:text="${user.userStatus}">활성화</td>
-          <td th:text="${user.userRole}">관리자</td>
-          <td th:text="${user.butlerLevel}">1</td>
-          <td th:text="${#temporals.format(user.registeredAt, 'yyyy-MM-dd')}">2022-10-11</td>
-          <td th:text="${#temporals.format(user.updatedAt, 'yyyy-MM-dd')}">2022-11-11</td>
-        </tr>
-      </table>
-      <div class = "pagination">
-        <ul>
-          <li><a><<</a></li>
-          <li><a><</a></li>
-          <li><a>1</a></li>
-          <li><a>2</a></li>
-          <li><a>3</a></li>
-          <li><a>4</a></li>
-          <li><a>5</a></li>
-          <li><a>6</a></li>
-          <li><a>7</a></li>
-          <li><a>8</a></li>
-          <li><a>9</a></li>
-          <li><a>10</a></li>
-          <li><a>></a></li>
-          <li><a>>></a></li>
-        </ul>
-      </div>
-      <input type = "hidden" name = "page" th:value="${pageResult.pageable.pageNumber}">
-    </form>
+    <div class = "description">
+      <p>* 상품분류를 선택 : 대분류(대분류만 선택), 중분류(대분류, 중분류 선택), 소분류(대분류, 중분류, 소분류 선택)</p>
+    </div>
+    <div class = "box list-box">
+      <form id = "list-form" method = "get" action = "/admin/product/list.do">
+        <div class = "search-box">
+          <table>
+            <tr>
+              <th>상품분류</th>
+              <td>
+                <select name = "main">
+                  <option value = "none">대분류</option>
+                  <option th:each="x : ${data.mains}" th:value = "${x.code}" th:text="${x.name}"
+                          th:selected="${#strings.equals(x.code, data.main)}"></option>
+                </select>
+                <select name = "medium">
+                  <option value = "none">중분류</option>
+                  <option th:each="x : ${data.mediums}" th:value = "${x.code}" th:text="${x.name}"
+                          th:selected="${#strings.equals(x.code, data.medium)}"></option>
+                </select>
+                <select name = "small">
+                  <option value = "none">소분류</option>
+                  <option th:each="x : ${data.smalls}" th:value = "${x.code}" th:text="${x.name}"
+                          th:selected="${#strings.equals(x.code, data.small)}"></option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>검색조건</th>
+              <td>
+                <select name = "searchKey">
+                  <option th:selected="${#strings.equals('name', data.searchKey)}" value = "name">상품명</option>
+                  <option th:selected="${#strings.equals('brand', data.searchKey)}" value = "brand">브랜드</option>
+                </select>
+                <input th:value="${data.searchValue}" name = "searchValue">
+                <input type = "submit" value = "검색">
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class = "product-list">
+          <table>
+            <tr>
+              <th>id</th>
+              <th>상품명</th>
+              <th>정가</th>
+              <th>할인가</th>
+              <th>재고</th>
+              <th>기능</th>
+            </tr>
+            <tr th:each = "x, i : ${data.pageResult.content}">
+              <td th:text="${x.id}">1</td>
+              <td th:text="${x.name}">냠냠먹이</td>
+              <td th:text="${x.price}">21000</td>
+              <td th:text="${x.discount}">19000</td>
+              <td th:text="${x.stock}">10</td>
+              <td>
+                <input type = "button" value = "수정">
+                <input type = "button" value = "삭제">
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class = "pagination">
+          <ul>
+            <li><a><<</a></li>
+            <li><a><</a></li>
+            <li><a>1</a></li>
+            <li><a>2</a></li>
+            <li><a>3</a></li>
+            <li><a>4</a></li>
+            <li><a>5</a></li>
+            <li><a>6</a></li>
+            <li><a>7</a></li>
+            <li><a>8</a></li>
+            <li><a>9</a></li>
+            <li><a>10</a></li>
+            <li><a>></a></li>
+            <li><a>>></a></li>
+          </ul>
+          <input type = "hidden" name = "page" th:value="${data.pageResult.pageable.pageNumber}">
+          <input id = "register-btn" type="button" value = "등록">
+        </div>
+      </form>
+    </div>
   </div>
-
   <footer>
     <div class = "content">
       <h3>프로젝트 개요</h3>
@@ -121,13 +183,14 @@
   <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
           integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
           crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
   <script src="/js/common.js"></script>
-  <script th:inline="javascript">
+  <script>
     $(function(){
 
-      let page = [[${pageResult.pageable.pageNumber}]];
+      let page = [[${data.pageResult.pageable.pageNumber}]];
       let page_first = parseInt(page) % 10 + 1;
-      let total = [[${pageResult.totalPages}]];
+      let total = [[${data.pageResult.totalPages}]];
 
       // 현재 페이지 on
       $(".pagination ul").children('li:eq(' + (page + 2) + ')').addClass('on');

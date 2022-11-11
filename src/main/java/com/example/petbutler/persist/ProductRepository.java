@@ -1,6 +1,8 @@
 package com.example.petbutler.persist;
 
 import com.example.petbutler.persist.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -8,17 +10,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-  @Query(value = "select "
-                + "    if(count(*) > 0, 'true', 'false') "
-                + "from product p "
-                + "where substr(p.category_code, 1, ?2) = substr(?1, 1, ?2) "
-                + "and   p.stock > 0 "
-                + "limit 1 "
-        , nativeQuery = true)
-  boolean existsAllByCategoryCodeAndStockGreaterThan(String code, int len);
+  int countAllByCategoryMainCode(String categoryMainCode);
+  int countAllByCategoryMediumCode(String categoryMediumCode);
+  int countAllByCategorySmallCode(String categorySmallCode);
 
-  @Query(value = "select count(*) from product p where substr(p.category_code, 1, ?2) = substr(?1, 1, ?2)"
-        , nativeQuery = true)
-  int countProductByCategoryCode(String code, int len);
+  Page<Product> findAllByCategoryMainCodeAndBrandContaining(String category, String brand, Pageable pageable);
+  Page<Product> findAllByCategoryMediumCodeAndBrandContaining(String category, String brand, Pageable pageable);
+  Page<Product> findAllByCategorySmallCodeAndBrandContaining(String category, String brand, Pageable pageable);
 
+
+  Page<Product> findAllByCategoryMainCodeAndNameContaining(String main, String name, Pageable pageable);
+
+  Page<Product> findAllByCategoryMediumCodeAndNameContaining(String medium, String name, Pageable pageable);
+
+  Page<Product> findAllByCategorySmallCodeAndNameContaining(String small, String name, Pageable pageable);
+
+  Page<Product> findAllByBrandContaining(String brand, Pageable pageable);
+  Page<Product> findAllByNameContaining(String name, Pageable pageable);
 }

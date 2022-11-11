@@ -28,25 +28,23 @@ public class UserController {
 
   private final UserService userService;
 
-  private final JwtTokenUtils JwtTokenUtils;
+  //private final JwtTokenUtils JwtTokenUtils;
 
   private final PetService petService;
 
   /**
    * 로그인 페이지 이동
    */
-  @RequestMapping("/sign-in")
+  @GetMapping("/sign-in")
   public String getSignInPage(HttpServletRequest request) {
-
-    // 현재 페이지 세션에 저장
-    String referer = request.getHeader("Referer");
-
-    if (referer != null && !referer.contains("/sign-in")) {
-      request.getSession().setAttribute("prevPage", referer);
-    }
 
     return "user/sign-in";
 
+  }
+
+  @GetMapping("/sign-in/fail")
+  public String getSignInFailPage(){
+    return "user/sign-in-fail";
   }
 
   /**
@@ -73,7 +71,7 @@ public class UserController {
     petService.registerPetsWhenSignUp(user, petRegisterForm);
 
     // JWT 토큰 등록
-    JwtTokenUtils.createToken(user);
+    //JwtTokenUtils.createToken(user);
 
     model.addAttribute("email", user.getEmail());
 

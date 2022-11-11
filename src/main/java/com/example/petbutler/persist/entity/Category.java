@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +23,13 @@ import org.hibernate.envers.AuditOverride;
 @Getter
 @Setter
 @AuditOverride(forClass = BaseEntity.class)
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(
+            columnNames = {"id", "code"}
+        )
+    }
+)
 public class Category extends BaseEntity{
 
   @Id
