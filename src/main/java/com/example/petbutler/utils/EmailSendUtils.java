@@ -1,7 +1,6 @@
 package com.example.petbutler.utils;
 
-import com.example.petbutler.config.ServerPropertyConfig;
-import com.example.petbutler.type.UserRole;
+import com.example.petbutler.config.ServerConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EmailSendUtils {
   
-  private final ServerPropertyConfig serverPropertyConfig;
+  private final ServerConfig serverConfig;
   
   private final JavaMailSender javaMailSender;
 
@@ -59,7 +58,7 @@ public class EmailSendUtils {
         + "    <img src=\"https://nordicdairycongress.com/sites/default/files/billeder/nyheder/colourbox15033372.jpg\" height=\"200\">\n"
         + "    <p>팻집사의 집사 맴버가 되신 것을 환영합니다!<br>아래 버튼을 통해 이메일 인증을 완료해주세요.</p>\n"
         + "    <a class = 'btn' href = '"
-        + serverPropertyConfig.getAddress()
+        + serverConfig.getAddress()
         +"/user/email-auth"
         + "?email=" + email
         +"&auth-key=" + emailAuthKey

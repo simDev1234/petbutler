@@ -1,6 +1,7 @@
-package com.example.petbutler.controller;
+package com.example.petbutler.web;
 
-import java.security.Principal;
+import com.example.petbutler.security.authentication.JwtTokenProvider;
+import com.mysql.cj.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -11,19 +12,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class MainController {
 
+  private final JwtTokenProvider jwtTokenProvider;
+
   /**
    * 메인페이지 이동
    */
   @RequestMapping("/")
-  public String index(Principal principal, Model model){
+  public String index(HttpServletRequest request, Model model){
 
-    if (principal != null) {
-      model.addAttribute("email", principal.getName());
+    String email = jwtTokenProvider.getEmail(request);
+
+    if (!StringUtils.isNullOrEmpty(email)){
+      model.addAttribute("email", email);
     }
 
     return "index";
   }
-
 
 
 }

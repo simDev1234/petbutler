@@ -1,4 +1,4 @@
-package com.example.petbutler.type;
+package com.example.petbutler.model.constants;
 
 import lombok.RequiredArgsConstructor;
 

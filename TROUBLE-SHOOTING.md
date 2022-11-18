@@ -161,3 +161,17 @@ No AuthenticationProvider found for org.springframework.security.authentication.
     - 해결 : applicaiton.yml에 spring.jpa.database=mysql 명시
 
 <br>
+
+## 7. java.lang.IllegalArgumentException: An invalid character [32] was present in the Cookie value
+    - 원인 : Cookie에 Invalid Character [32] 가 있다. 
+      >> Tomcat 8.5 부터 추가된 기본 쿠키 규칙 때문이다.
+      >> ';', ',', '=', ' '은 쿠키 값으로 이용될 수 없는데 'Bearer dskfjasdfjpasdofi(토큰값)'-> 공백을 넣었기 때문에 발생
+    - 해결 : Bearer 다음에 공백을 제거하고 : 을 추가
+    - 참조 : https://shanepark.tistory.com/133
+
+## 8. csrf 관련 에러 : 쿠키 설정 후 접속이 계속 되지 않는 이슈
+    - 원인 : 스프링 시큐러티는 디폴트로 헤더에 Cache-Control을 추가하고, no-cache, no-store 등의 옵션을 추가한다. 이에 따라 쿠키 사용 또한 제한된다.
+    - 해결 : csrf.disabled() 를 하면 csrf 토큰을 만들지 않고, Cache-Control을 해제한다. 이렇게 되면 쿠키를 사용할 수는 있으나 csrf에 취약해지는 단점이 생긴다. (공격자가 http url을 알면 공격가능)
+    - 대안 : Access token은 js에 저장하고, Refresh Token은 쿠키에 저장하는 방법
+    - 참조 : https://developer-ping9.tistory.com/234
+            https://developer-ping9.tistory.com/234

@@ -1,11 +1,11 @@
 package com.example.petbutler.service.impl;
 
-import com.example.petbutler.config.ServerPropertyConfig;
+import com.example.petbutler.config.ServerConfig;
 import com.example.petbutler.model.PetRegisterForm;
 import com.example.petbutler.persist.entity.User;
 import com.example.petbutler.persist.entity.Pet;
 import com.example.petbutler.exception.ButlerUserException;
-import com.example.petbutler.exception.type.ErrorCode;
+import com.example.petbutler.exception.constants.ErrorCode;
 import com.example.petbutler.persist.UserRepository;
 import com.example.petbutler.persist.PetRepository;
 import com.example.petbutler.service.PetService;
@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +33,7 @@ public class PetServiceImpl implements PetService {
 
   private final UserRepository userRepository;
 
-  private final ServerPropertyConfig serverPropertyConfig;
+  private final ServerConfig serverConfig;
   private final FileUploadUtils fileUploadUtils;
 
   /**
@@ -128,8 +127,8 @@ public class PetServiceImpl implements PetService {
 
     if (Objects.nonNull(files)) {
 
-      String localRoot = serverPropertyConfig.getPetThumbnailLocalRoot();
-      String urlRoot   = serverPropertyConfig.getPetThumbnailUrlRoot();
+      String localRoot = serverConfig.getPetThumbnailLocalRoot();
+      String urlRoot   = serverConfig.getPetThumbnailUrlRoot();
 
       for (MultipartFile file : files) {
 

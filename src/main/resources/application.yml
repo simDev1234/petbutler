@@ -1,12 +1,15 @@
 spring:
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/petbutler?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Seoul
     username: root
     password: password
+
   sql:
     init:
       mode: always
+
   jpa:
     defer-datasource-initialization: true
     hibernate:
@@ -17,11 +20,10 @@ spring:
         format_sql: true
         show_sql: true
     database: mysql
-  cache:
-    type: redis
-  redis:
-    host: localhost
-    port: 6379
+
+  jwt:
+    secret: cGV0YnV0bGVy
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -38,8 +40,4 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-logging:
-  level:
-    org:
-      springframework: debug
-      web: debug
+

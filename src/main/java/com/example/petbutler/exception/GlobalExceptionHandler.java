@@ -1,6 +1,9 @@
 package com.example.petbutler.exception;
 
-import com.example.petbutler.exception.type.ErrorCode;
+import com.example.petbutler.exception.ButlerCategoryException;
+import com.example.petbutler.exception.ButlerUserException;
+import com.example.petbutler.exception.constants.ErrorCode;
+import com.example.petbutler.exception.constants.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

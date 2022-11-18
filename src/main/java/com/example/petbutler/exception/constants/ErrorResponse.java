@@ -1,4 +1,4 @@
-package com.example.petbutler.exception;
+package com.example.petbutler.exception.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

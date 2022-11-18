@@ -3,7 +3,7 @@ package com.example.petbutler.admin.service.impl;
 import com.example.petbutler.admin.model.AdminUserDetailForm;
 import com.example.petbutler.admin.service.AdminUserService;
 import com.example.petbutler.exception.ButlerUserException;
-import com.example.petbutler.exception.type.ErrorCode;
+import com.example.petbutler.exception.constants.ErrorCode;
 import com.example.petbutler.model.PetDetail;
 import com.example.petbutler.persist.PetRepository;
 import com.example.petbutler.persist.UserRepository;
@@ -31,18 +31,23 @@ public class AdminUserServiceImpl implements AdminUserService {
   @Transactional
   public AdminUserDetailForm getAdminUserDetail(String email) {
 
+    // User 정보 DB에서 조회
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
 
-    AdminUserDetailForm userDetail = AdminUserDetailForm.fromUserInfo(user);
+    // User -> AdminUserDetailForm
+    AdminUserDetailForm userDetailForm = user.toUserDetailForm();
 
+    // Pet 정보 DB에서 조회
     List<PetDetail> pets =
         petRepository.findAllByUser(user).stream().map(PetDetail::from).collect(Collectors.toList());
 
+    // Pet 정보 추가
     if (!CollectionUtils.isEmpty(pets)) {
-      userDetail.setPets(pets);
+      userDetailForm.setPets(pets);
     }
-    return userDetail;
+
+    return userDetailForm;
 
   }
 
@@ -55,7 +60,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     User user = userRepository.findByEmail(adminUserDetailForm.getEmail())
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
 
-    user.setUserRole(adminUserDetailForm.getUserRole());
+    user.setUserRoles(adminUserDetailForm.getRoles());
     user.setUserStatus(adminUserDetailForm.getUserStatus());
     user.setPhone(adminUserDetailForm.getPhone());
 

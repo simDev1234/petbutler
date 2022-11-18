@@ -1,16 +1,23 @@
-package com.example.petbutler.controller;
+package com.example.petbutler.web;
 
 import com.example.petbutler.model.PetRegisterForm;
-import com.example.petbutler.model.UserSearch;
+import com.example.petbutler.model.UserSearchForm;
+import com.example.petbutler.model.UserSignInForm;
 import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.persist.entity.User;
-import com.example.petbutler.security.authentication.JwtTokenUtils;
+import com.example.petbutler.security.authentication.JwtTokenProvider;
 import com.example.petbutler.service.PetService;
 import com.example.petbutler.service.UserService;
 import java.security.Principal;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,9 +35,11 @@ public class UserController {
 
   private final UserService userService;
 
-  //private final JwtTokenUtils JwtTokenUtils;
-
   private final PetService petService;
+
+  private final AuthenticationManager authenticationManager;
+
+  private final JwtTokenProvider jwtTokenProvider;
 
   /**
    * 로그인 페이지 이동
@@ -42,9 +51,40 @@ public class UserController {
 
   }
 
+  /**
+   * 로그인 실패 시 페이지 이동
+   */
   @GetMapping("/sign-in/fail")
   public String getSignInFailPage(){
     return "user/sign-in-fail";
+  }
+
+  /**
+   * 로그인 (JWT 인증 토큰 생성)
+   */
+  @PostMapping("/sign-in")
+  public String signIn(UserSignInForm userSignInForm, HttpServletResponse response){
+
+    // 아이디와 비밀번호 확인
+    User user = userService.authenticate(userSignInForm);
+
+    // JWT 토큰 생성
+    String token = jwtTokenProvider.generateToken(user.getEmail(), user.getUserRoles());
+
+    // 응답 헤더의 쿠키에 HttpOnly로 토큰 저장
+    Cookie cookie = new Cookie("Authorization", String.format("Bearer:%s", token));
+    cookie.setPath("/");
+    cookie.setMaxAge((int)JwtTokenProvider.TOKEN_EXPIRATION_TIME);
+    cookie.setHttpOnly(true); // script로부터 접근 불가
+    response.addCookie(cookie);
+
+    // Authentication 추출
+    Authentication authentication = jwtTokenProvider.getAuthentication(token);
+
+    // SecurityContext에 등록
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    return "redirect:/";
   }
 
   /**
@@ -69,9 +109,6 @@ public class UserController {
 
     // 팻 등록
     petService.registerPetsWhenSignUp(user, petRegisterForm);
-
-    // JWT 토큰 등록
-    //JwtTokenUtils.createToken(user);
 
     model.addAttribute("email", user.getEmail());
 
@@ -135,7 +172,7 @@ public class UserController {
 
     String email = principal.getName();
 
-    UserSearch detail = userService.getUserDetailByEmail(email);
+    UserSearchForm detail = userService.getUserDetailByEmail(email);
 
     model.addAttribute("detail", detail);
 
@@ -146,7 +183,7 @@ public class UserController {
    * 회원수정
    */
   @PutMapping(value = "/mypage", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public String updateUser(Principal principal, @RequestBody UserSearch detail){
+  public String updateUser(Principal principal, @RequestBody UserSearchForm detail){
 
     String email = principal.getName();
 
@@ -164,7 +201,7 @@ public class UserController {
 
     String email = principal.getName();
 
-    UserSearch detail = userService.getUserDetailByEmail(email);
+    UserSearchForm detail = userService.getUserDetailByEmail(email);
 
     model.addAttribute("detail", detail);
 

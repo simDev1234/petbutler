@@ -1,54 +1,41 @@
 package com.example.petbutler.security.authentication;
 
+import com.mysql.cj.util.StringUtils;
 import java.io.IOException;
 import javax.servlet.FilterChain;
-import javax.servlet.GenericFilter;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-@RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationFilter extends GenericFilter {
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final JwtTokenUtils jwtTokenUtils;
-
+  private final JwtTokenProvider jwtTokenProvider;
 
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-      throws IOException, ServletException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                  FilterChain filterChain) throws ServletException, IOException {
 
-    // http header에서 token 추출
-    String token = jwtTokenUtils.getToken((HttpServletRequest) request);
+    // 요청 헤더에서 jwt 토큰을 가져온다.
+    String token = jwtTokenProvider.resolveTokenFromRequest(request);
 
-    System.out.println("token : " + token);
-
-    try {
-      // 토큰이 존재하고 유효할 경우
-      if (token != null && jwtTokenUtils.isValid(token)) {
-
-        // 인증 정보 추출
-        Authentication authentication = jwtTokenUtils.getAuthentication(token);
-
-        // 시큐러티 컨텍스트에 인증 정보 저장
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        System.out.println("인증 정보 추출 : " + jwtTokenUtils.getAuthentication(token).toString());
-        System.out.println("시큐러티 컨텍스트에 인증 정보 저장");
-
-      }
-    } catch(Exception e) {
-
-      log.error("Error occured : {}", e.getStackTrace());
-
+    // 토큰 유효성 파악
+    if (!StringUtils.isNullOrEmpty(token) && jwtTokenProvider.validateToken(token)) {
+      // 유효할 경우 유저 정보를 받아온다.
+      Authentication authentication = jwtTokenProvider.getAuthentication(token);
+      // SecurityContext에 Authentication 저장
+      SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    chain.doFilter(request, response);
-
+    filterChain.doFilter(request, response);
   }
+
 }

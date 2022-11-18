@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "server")
 @Getter
 @Setter
-public class ServerPropertyConfig {
+public class ServerConfig {
 
   private String ip = "127.0.0.1";
 

@@ -1,18 +1,19 @@
-package com.example.petbutler.admin.controller;
+package com.example.petbutler.admin.web;
 
 import com.example.petbutler.admin.model.AdminUserDetailForm;
 import com.example.petbutler.admin.model.AdminUserSearchForm;
 import com.example.petbutler.admin.service.AdminUserService;
+import com.example.petbutler.model.constants.UserRole;
 import com.example.petbutler.persist.UserRepository;
 import com.example.petbutler.persist.entity.User;
-import com.example.petbutler.type.UserRole;
-import java.util.Objects;
+import com.mysql.cj.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/admin/user")
+@PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 public class AdminUserController {
 
@@ -44,16 +46,15 @@ public class AdminUserController {
     String searchValue = adminUserSearchForm.getSearchValue();
 
     // 검색어 입력 시 필터링
-    if (Objects.nonNull(searchKey)) {
+    if (!StringUtils.isNullOrEmpty(searchKey)) {
       // 구분 : 전체
       if ("all".equals(searchKey)) {
         pageResult = userRepository.findAllByEmailContainsIgnoreCase(searchValue, pageable);
       } 
       // 구분 : 일반 회원 or 관리자
       else {
-        UserRole userRole = UserRole.findUserRole(String.format("ROLE_%s", searchValue.toUpperCase()));
-        pageResult = userRepository.findAllByUserRoleAndEmailContainsIgnoreCase(userRole, searchValue,
-            pageable);
+        UserRole userRole = UserRole.getUserRole(String.format("ROLE_%s", searchValue.toUpperCase()));
+        pageResult = userRepository.findAllByUserRolesContainingAndEmailContainsIgnoreCase(userRole, searchValue, pageable);
       }
       model.addAttribute("searchKey", searchKey);
       model.addAttribute("searchValue", searchValue);

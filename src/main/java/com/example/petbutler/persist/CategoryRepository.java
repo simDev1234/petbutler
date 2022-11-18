@@ -1,7 +1,7 @@
 package com.example.petbutler.persist;
 
 import com.example.petbutler.persist.entity.Category;
-import com.example.petbutler.type.Division;
+import com.example.petbutler.model.constants.Division;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

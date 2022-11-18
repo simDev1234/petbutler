@@ -1,10 +1,10 @@
 package com.example.petbutler.admin.model;
 
 import com.example.petbutler.model.PetDetail;
-import com.example.petbutler.persist.entity.User;
-import com.example.petbutler.type.UserRole;
-import com.example.petbutler.type.UserStatus;
+import com.example.petbutler.model.constants.UserRole;
+import com.example.petbutler.model.constants.UserStatus;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,15 +35,15 @@ public class AdminUserDetailForm {
 
   private List<PetDetail> pets;
 
-  public static AdminUserDetailForm fromUserInfo(User user) {
-    return AdminUserDetailForm.builder()
-        .email(user.getEmail())
-        .userStatus(user.getUserStatus())
-        .userRole(user.getUserRole())
-        .butlerLevel(user.getButlerLevel())
-        .phone(user.getPhone())
-        .registeredAt(user.getRegisteredAt())
-        .updatedAt(user.getUpdatedAt())
-        .build();
+
+  public List<String> getRoles() {
+
+    if (this.userRole.isAdmin()) {
+      return Arrays.asList(UserRole.ROLE_REGULAR.name(), UserRole.ROLE_ADMIN.name());
+
+    }
+
+    return Arrays.asList(UserRole.ROLE_ADMIN.name());
   }
+
 }

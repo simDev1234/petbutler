@@ -1,25 +1,20 @@
 package com.example.petbutler.service.impl;
 
 import com.example.petbutler.exception.ButlerUserException;
-import com.example.petbutler.exception.type.ErrorCode;
+import com.example.petbutler.exception.constants.ErrorCode;
 import com.example.petbutler.model.PetRegisterForm;
-import com.example.petbutler.model.UserSearch;
+import com.example.petbutler.model.UserSearchForm;
+import com.example.petbutler.model.UserSignInForm;
 import com.example.petbutler.model.UserSignUpForm;
+import com.example.petbutler.model.constants.UserStatus;
 import com.example.petbutler.persist.UserRepository;
 import com.example.petbutler.persist.entity.User;
 import com.example.petbutler.service.UserService;
-import com.example.petbutler.type.UserRole;
-import com.example.petbutler.type.UserStatus;
 import com.example.petbutler.utils.EmailSendUtils;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +24,25 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
 
+  private final PasswordEncoder passwordEncoder;
+
   private final EmailSendUtils emailSendUtils;
+
+  /**
+   * 로그인 시 아이디, 비밀번호 일치 확인
+   */
+  @Override
+  public User authenticate(UserSignInForm userSignInForm) {
+
+    User user = userRepository.findByEmail(userSignInForm.getEmail())
+        .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
+
+    if (!passwordEncoder.matches(userSignInForm.getPassword(), user.getPassword())) {
+      new ButlerUserException(ErrorCode.USER_PASSWORD_NOT_MATCH);
+    }
+
+    return user;
+  }
 
   /**
    * 고객 회원가입
@@ -47,7 +60,11 @@ public class UserServiceImpl implements UserService {
     validateIfEmailAlreadyRegistered(userSignUpForm.getEmail());
 
     // 회원 등록
-    User user = userRepository.save(User.of(userSignUpForm));
+    User user = userSignUpForm.toEntity();
+
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+    user = userRepository.save(user);
 
     // 인증 메일 전송
     sendEmailToUser(user.getEmail(), user.getEmailAuthKey());
@@ -57,9 +74,9 @@ public class UserServiceImpl implements UserService {
 
   private void validateIfEmailAlreadyRegistered(String email) {
 
-    Optional<User> optionalCustomer = userRepository.findByEmail(email);
+    boolean exists = userRepository.existsByEmail(email);
 
-    if (optionalCustomer.isPresent()){
+    if (exists){
       throw new ButlerUserException(ErrorCode.USER_ALREADY_EXIST);
     }
 
@@ -126,7 +143,7 @@ public class UserServiceImpl implements UserService {
 
 
   /**
-   * 스프링 시큐러티 사용자 정보 로드
+   * 스프링 시큐러티 loadUserByUsername
    */
   @Override
   public UserDetails loadUserByUsername(String email) throws ButlerUserException {
@@ -134,19 +151,12 @@ public class UserServiceImpl implements UserService {
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
 
+    // 이메일 인증 및 정지/탈퇴 등 회원 상태 확인
     validateIfUserIsInUse(user);
 
-    List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
+    // 로그인 정보 로드
+    return user;
 
-    grantedAuthorityList.add(new SimpleGrantedAuthority(UserRole.ROLE_REGULAR.name()));
-
-    if (UserRole.ROLE_ADMIN.equals(user.getUserRole())) {
-      grantedAuthorityList.add(new SimpleGrantedAuthority(UserRole.ROLE_ADMIN.name()));
-    }
-
-    return new org.springframework.security.core.userdetails.User(
-        user.getEmail(), user.getPassword(), grantedAuthorityList
-    );
   }
 
   private static void validateIfUserIsInUse(User user) {
@@ -164,12 +174,12 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public UserSearch getUserDetailByEmail(String email) {
+  public UserSearchForm getUserDetailByEmail(String email) {
 
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
 
-    return UserSearch.builder()
+    return UserSearchForm.builder()
         .butlerLevel(user.getButlerLevel())
         .email(user.getEmail())
         .phone(user.getPhone())
@@ -183,7 +193,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public void updateUser(String email, UserSearch detail) {
+  public void updateUser(String email, UserSearchForm detail) {
 
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));

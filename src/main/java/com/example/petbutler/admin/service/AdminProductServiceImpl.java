@@ -5,7 +5,7 @@ import com.example.petbutler.persist.CategoryRepository;
 import com.example.petbutler.persist.ProductRepository;
 import com.example.petbutler.persist.entity.Category;
 import com.example.petbutler.persist.entity.Product;
-import com.example.petbutler.type.Division;
+import com.example.petbutler.model.constants.Division;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;

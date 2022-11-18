@@ -1,6 +1,6 @@
 package com.example.petbutler.persist.entity;
 
-import com.example.petbutler.type.Division;
+import com.example.petbutler.model.constants.Division;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;

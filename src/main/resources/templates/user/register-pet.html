@@ -11,12 +11,7 @@
   <!-- Header -->
   <header>
     <div th:replace="/fragments/layout.html::#header"></div>
-    <div th:if="${#strings.isEmpty(email)}">
-      <div th:replace="/fragments/layout.html::#userNav-before"></div>
-    </div>
-    <div th:if="${not #strings.isEmpty(email)}">
-      <div th:replace="/fragments/layout.html::#userNav-after"></div>
-    </div>
+    <div th:replace="/fragments/layout.html::#userNav-after"></div>
   </header>
 
   <!-- Popup -->
