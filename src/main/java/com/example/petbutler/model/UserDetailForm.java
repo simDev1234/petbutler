@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UserSearchForm {
+public class UserDetailForm {
 
   private int butlerLevel;
 

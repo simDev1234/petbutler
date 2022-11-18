@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>회원 가입 완료</title>
+  <title>마이펫</title>
   <link rel="stylesheet" href="/css/common.css">
   <style>
     table{
+      width:100%;
       border-collapse: collapse;
     }
 
@@ -16,35 +17,117 @@
       border : 1px solid black;
       text-align: center;
     }
-    th { width : 100px; }
-    td { width : 200px; }
+
+    .buttons{
+      margin-top: 5px;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
   <!-- Header -->
   <div th:replace="/fragments/layout.html::#header"></div>
+  <div th:replace="/fragments/layout.html::#userNav-after"></div>
 
   <!-- Pet info -->
-  <div id = "pet-box">
-    <table>
-      <tr>
-        <th>썸네일</th>
-        <th>이름</th>
-        <th>종류</th>
-        <th>비고</th>
-      </tr>
-      <tr th:each = "pet : ${petList}">
-        <td><img th:src = "${pet.thumbnailUrlPath}"></td>
-        <td th:text = "${pet.name}"><input type = "text" value = "봄이"></td>
-        <td th:text = "${pet.kind}"><input type = "text" value = "고양이"></td>
-        <td>
-          <input type = "button" value = "썸네일">
-          <input type = "button" value = "수정">
-          <input type = "button" value = "삭제">
-        </td>
-      </tr>
-    </table>
+  <div class = "content-box">
+    <div class = "content" id = "pet-box">
+      <h2>내 새꾸 보기</h2>
+      <table>
+        <tr>
+          <th>썸네일</th>
+          <th>이름</th>
+          <th>종류</th>
+          <th>비고</th>
+        </tr>
+        <tr th:each = "pet : ${pets}">
+          <td>
+            <img th:src = "${pet.thumbnailUrlPath}" width = "200px">
+            <input type = "hidden" class = "id" name = "id" th:value = "${pet.id}">
+          </td>
+          <td>
+            <input class = "name" type = "text" th:value = "${pet.name}">
+          </td>
+          <td>
+            <select class = "kind" name = "kind">
+              <option value = "dog" th:selected="${#strings.equals(pet.kind, 'dog')}">강아지</option>
+              <option value = "cat" th:selected="${#strings.equals(pet.kind, 'cat')}">고양이</option>
+            </select>
+          </td>
+          <td>
+            <input class = "update" type = "button" value = "수정">
+            <input class = "delete" type = "button" value = "삭제">
+          </td>
+        </tr>
+        <tr th:if="${pets == null}">
+          <td colspan="4">등록된 반려동물이 없습니다.</td>
+        </tr>
+      </table>
+    </div>
+    <div class = "content buttons">
+      <input type = "button" value = "등록" onclick="location.href='/user/mypets/register-pet'">
+    </div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
   <script src="/js/common.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script>
+
+    $(function(){
+
+      $('.delete').on('click', function(){
+
+        if (!confirm("정말 삭제하시겠습니까?")) {
+          return false;
+        }
+
+        const $tr  = $(this).parentsUntil('table');
+        const $id   = $tr.find('.id');
+        const url = "/user/mypets/" + $id.val();
+
+        axios.delete(url)
+        .then((res) => {
+          location.reload();
+        })
+        .catch((error) => {
+          alert(error.response.data);
+        })
+
+      });
+
+      $('.update').on('click', function(){
+
+        const url = '/user/mypets';
+        const config = {
+          headers:{
+            "Content-Type":"application/json"
+          }
+        }
+
+        const $tr  = $(this).parentsUntil('table');
+        const $id   = $tr.find('.id');
+        const $name = $tr.find('.name');
+        const $kind = $tr.find('.kind');
+
+        const data = {
+          id   : $id.val(),
+          name : $name.val(),
+          kind : $kind.val()
+        }
+
+        axios.put(url, data, config)
+        .then((res) => {
+          location.reload();
+        })
+        .catch((error) => {
+          alert(error.response.data);
+        })
+
+      });
+
+    });
+  </script>
 </body>
 </html>

@@ -12,7 +12,9 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class PetDetail {
+public class PetDetailForm {
+
+  private long id;
 
   private String thumbnailUrlPath;
 
@@ -20,8 +22,9 @@ public class PetDetail {
 
   private String name;
 
-  public static PetDetail from(Pet pet) {
-    return PetDetail.builder()
+  public static PetDetailForm from(Pet pet) {
+    return PetDetailForm.builder()
+        .id(pet.getId())
         .thumbnailUrlPath(pet.getThumbnailUrlPath())
         .kind(pet.getKind())
         .name(pet.getName())

@@ -1,4 +1,4 @@
-package com.example.petbutler.utils;
+package com.example.petbutler.utils.wrapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

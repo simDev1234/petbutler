@@ -4,7 +4,7 @@ import com.example.petbutler.admin.model.AdminUserDetailForm;
 import com.example.petbutler.admin.service.AdminUserService;
 import com.example.petbutler.exception.ButlerUserException;
 import com.example.petbutler.exception.constants.ErrorCode;
-import com.example.petbutler.model.PetDetail;
+import com.example.petbutler.model.PetDetailForm;
 import com.example.petbutler.persist.PetRepository;
 import com.example.petbutler.persist.UserRepository;
 import com.example.petbutler.persist.entity.User;
@@ -39,8 +39,8 @@ public class AdminUserServiceImpl implements AdminUserService {
     AdminUserDetailForm userDetailForm = user.toUserDetailForm();
 
     // Pet 정보 DB에서 조회
-    List<PetDetail> pets =
-        petRepository.findAllByUser(user).stream().map(PetDetail::from).collect(Collectors.toList());
+    List<PetDetailForm> pets =
+        petRepository.findAllByUser(user).stream().map(PetDetailForm::from).collect(Collectors.toList());
 
     // Pet 정보 추가
     if (!CollectionUtils.isEmpty(pets)) {

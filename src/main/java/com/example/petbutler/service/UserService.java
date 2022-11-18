@@ -1,6 +1,6 @@
 package com.example.petbutler.service;
 
-import com.example.petbutler.model.UserSearchForm;
+import com.example.petbutler.model.UserDetailForm;
 import com.example.petbutler.model.UserSignInForm;
 import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.model.PetRegisterForm;
@@ -16,9 +16,9 @@ public interface UserService extends UserDetailsService {
 
   UserDetails loadUserByUsername(String username);
 
-  UserSearchForm getUserDetailByEmail(String email);
+  UserDetailForm getUserDetailByEmail(String email);
 
-  void updateUser(String email, UserSearchForm detail);
+  void updateUser(UserDetailForm form);
 
   void withdraw(String email);
 

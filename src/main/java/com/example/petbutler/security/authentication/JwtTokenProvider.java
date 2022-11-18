@@ -84,8 +84,11 @@ public class JwtTokenProvider {
 
     String token = resolveTokenFromRequest(request);
 
-    return getEmail(token);
+    if (!StringUtils.isNullOrEmpty(token)) {
+      return getEmail(token);
+    }
 
+    return null;
   }
 
   /**

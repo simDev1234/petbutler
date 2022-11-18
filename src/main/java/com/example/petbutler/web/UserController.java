@@ -1,7 +1,7 @@
 package com.example.petbutler.web;
 
 import com.example.petbutler.model.PetRegisterForm;
-import com.example.petbutler.model.UserSearchForm;
+import com.example.petbutler.model.UserDetailForm;
 import com.example.petbutler.model.UserSignInForm;
 import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.persist.entity.User;
@@ -10,18 +10,17 @@ import com.example.petbutler.service.PetService;
 import com.example.petbutler.service.UserService;
 import java.security.Principal;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,15 +36,13 @@ public class UserController {
 
   private final PetService petService;
 
-  private final AuthenticationManager authenticationManager;
-
   private final JwtTokenProvider jwtTokenProvider;
 
   /**
    * 로그인 페이지 이동
    */
   @GetMapping("/sign-in")
-  public String getSignInPage(HttpServletRequest request) {
+  public String getSignInPage() {
 
     return "user/sign-in";
 
@@ -72,7 +69,8 @@ public class UserController {
     String token = jwtTokenProvider.generateToken(user.getEmail(), user.getUserRoles());
 
     // 응답 헤더의 쿠키에 HttpOnly로 토큰 저장
-    Cookie cookie = new Cookie("Authorization", String.format("Bearer:%s", token));
+    String cookieValue = String.format("%s%s", JwtTokenProvider.TOKEN_PREFIX, token);
+    Cookie cookie = new Cookie(JwtTokenProvider.TOKEN_HEADER, cookieValue);
     cookie.setPath("/");
     cookie.setMaxAge((int)JwtTokenProvider.TOKEN_EXPIRATION_TIME);
     cookie.setHttpOnly(true); // script로부터 접근 불가
@@ -130,94 +128,63 @@ public class UserController {
   }
 
   /**
-   * (로그인 후) 펫 등록 페이지 이동
-   */
-  @GetMapping("/register-pet")
-  public String getRegisterPetPage(){
-
-    return "user/register-pet";
-
-  }
-
-
-  /**
-   * (로그인 후) 반려동물 등록
-   */
-  @PostMapping("/register-pet")
-  public String registerPets(PetRegisterForm petRegisterForm, Principal principal, Model model){
-
-    boolean petRegisterResult = petService.registerPetsAfterSignUp(principal.getName(), petRegisterForm);
-
-    if (petRegisterResult) {
-
-      model.addAttribute("popupTitle", "반려동물 등록 완료 안내");
-      model.addAttribute("popupMsg", "반려동물 등록이 정상적으로 완료되었습니다.");
-
-    } else {
-
-      model.addAttribute("popupTitle", "반려동물 등록 에러 안내");
-      model.addAttribute("popupMsg", "반려동물 등록이 정상적으로 이루어지지 않았습니다.");
-
-    }
-
-    return "user/register-pet";
-
-  }
-
-  /**
-   * 회원 조회
+   * 마이페이지 - 회원 조회
    */
   @GetMapping("/mypage")
-  public String getCustomerDetail(Principal principal, Model model) {
+  public String getMyPage(Principal principal, Model model) {
 
+    // Principal에서 아이디 추출
     String email = principal.getName();
 
-    UserSearchForm detail = userService.getUserDetailByEmail(email);
+    // 회원 정보
+    UserDetailForm user = userService.getUserDetailByEmail(email);
 
-    model.addAttribute("detail", detail);
+    model.addAttribute("user", user);
 
     return "user/mypage";
   }
 
   /**
-   * 회원수정
+   * 마이페이지 - 회원수정
    */
   @PutMapping(value = "/mypage", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public String updateUser(Principal principal, @RequestBody UserSearchForm detail){
+  public ResponseEntity<?> updateUser(@RequestBody UserDetailForm form){
 
-    String email = principal.getName();
+    userService.updateUser(form);
 
-    userService.updateUser(email, detail);
-
-    return "redirect:user/mypage";
+    return ResponseEntity.ok().build();
   }
 
   /**
-   * 회원탈퇴 페이지 이동
-   *
-   */
-  @GetMapping("/withdraw")
-  public String getDeletePage(Principal principal, Model model) {
-
-    String email = principal.getName();
-
-    UserSearchForm detail = userService.getUserDetailByEmail(email);
-
-    model.addAttribute("detail", detail);
-
-    return "user/mypage";
-  }
-
-  /**
-   * 회원탈퇴
+   * 마이페이지 - 회원탈퇴
    * - 물리삭제 아닌 플래그 처리
    */
-  @DeleteMapping("/withdraw")
-  public String deleteCustomer(Principal principal){
+  @DeleteMapping("/withdraw/{email}")
+  public ResponseEntity<?> deleteCustomer(@PathVariable String email, HttpServletResponse response){
 
-    String email = principal.getName();
-
+    // 회원 상태 탈퇴 처리
     userService.withdraw(email);
+
+    // 쿠키 삭제
+    Cookie cookie = new Cookie(JwtTokenProvider.TOKEN_HEADER, null);
+    cookie.setMaxAge(0);
+    cookie.setPath("/");
+    response.addCookie(cookie);
+
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * 로그아웃
+   */
+  @RequestMapping("/logout")
+  public String logout(HttpServletResponse response){
+
+    // 쿠키 삭제
+    Cookie cookie = new Cookie(JwtTokenProvider.TOKEN_HEADER, null);
+    cookie.setMaxAge(0);
+    cookie.setPath("/");
+    response.addCookie(cookie);
 
     return "redirect:/";
   }

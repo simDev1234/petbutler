@@ -3,7 +3,7 @@ package com.example.petbutler.service.impl;
 import com.example.petbutler.exception.ButlerUserException;
 import com.example.petbutler.exception.constants.ErrorCode;
 import com.example.petbutler.model.PetRegisterForm;
-import com.example.petbutler.model.UserSearchForm;
+import com.example.petbutler.model.UserDetailForm;
 import com.example.petbutler.model.UserSignInForm;
 import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.model.constants.UserStatus;
@@ -174,12 +174,12 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public UserSearchForm getUserDetailByEmail(String email) {
+  public UserDetailForm getUserDetailByEmail(String email) {
 
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
 
-    return UserSearchForm.builder()
+    return UserDetailForm.builder()
         .butlerLevel(user.getButlerLevel())
         .email(user.getEmail())
         .phone(user.getPhone())
@@ -193,13 +193,13 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   @Transactional
-  public void updateUser(String email, UserSearchForm detail) {
+  public void updateUser(UserDetailForm form) {
 
-    User user = userRepository.findByEmail(email)
+    User user = userRepository.findByEmail(form.getEmail())
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
 
-    user.setButlerLevel(detail.getButlerLevel());
-    user.setPhone(detail.getPhone());
+    user.setButlerLevel(form.getButlerLevel());
+    user.setPhone(form.getPhone());
   }
 
   /**

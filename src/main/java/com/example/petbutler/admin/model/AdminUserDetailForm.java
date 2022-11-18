@@ -1,6 +1,6 @@
 package com.example.petbutler.admin.model;
 
-import com.example.petbutler.model.PetDetail;
+import com.example.petbutler.model.PetDetailForm;
 import com.example.petbutler.model.constants.UserRole;
 import com.example.petbutler.model.constants.UserStatus;
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ public class AdminUserDetailForm {
 
   private LocalDateTime updatedAt;
 
-  private List<PetDetail> pets;
+  private List<PetDetailForm> pets;
 
 
   public List<String> getRoles() {

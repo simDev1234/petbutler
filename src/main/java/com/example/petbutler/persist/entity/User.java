@@ -1,18 +1,14 @@
 package com.example.petbutler.persist.entity;
 
 import com.example.petbutler.admin.model.AdminUserDetailForm;
-import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.model.constants.UserRole;
 import com.example.petbutler.model.constants.UserStatus;
-import com.example.petbutler.utils.StringListConverter;
+import com.example.petbutler.persist.converter.StringListConverter;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,7 +24,6 @@ import org.hibernate.envers.AuditOverride;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Entity
 @Getter

@@ -1,6 +1,8 @@
 package com.example.petbutler.service.impl;
 
 import com.example.petbutler.config.ServerConfig;
+import com.example.petbutler.exception.ButlerPetException;
+import com.example.petbutler.model.PetDetailForm;
 import com.example.petbutler.model.PetRegisterForm;
 import com.example.petbutler.persist.entity.User;
 import com.example.petbutler.persist.entity.Pet;
@@ -9,7 +11,7 @@ import com.example.petbutler.exception.constants.ErrorCode;
 import com.example.petbutler.persist.UserRepository;
 import com.example.petbutler.persist.PetRepository;
 import com.example.petbutler.service.PetService;
-import com.example.petbutler.utils.FilePath;
+import com.example.petbutler.utils.wrapper.FilePath;
 import com.example.petbutler.utils.FileUploadUtils;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +39,8 @@ public class PetServiceImpl implements PetService {
   private final FileUploadUtils fileUploadUtils;
 
   /**
-   * 회원 가입 시 팻 등록 - 팻 정보가 하나도 없거나, 모든 팻 정보가 이름이 누락된 경우 실패응답
+   * 회원 가입 시 팻 등록
+   * - 팻 정보가 하나도 없거나, 모든 팻 정보가 이름이 누락된 경우 실패응답
    */
   @Override
   @Transactional
@@ -58,7 +61,8 @@ public class PetServiceImpl implements PetService {
   }
 
   /**
-   * 회원 가입 후 팻 등록
+   * 회원 가입 후 팻 등록 (마이펫의 등록페이지)
+   * - 팻 정보가 하나도 없거나, 모든 팻 정보가 이름이 누락된 경우 실패응답
    */
   @Override
   @Transactional
@@ -153,5 +157,57 @@ public class PetServiceImpl implements PetService {
     return filePaths;
   }
 
+  /**
+   * 마이팻 리스트 조회
+   */
+  @Override
+  @Transactional
+  public List<PetDetailForm> getPetDetailByUserEmail(String email) {
 
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
+
+    List<Pet> pets = petRepository.findAllByUser(user);
+
+    if (!CollectionUtils.isEmpty(pets)){
+      return pets.stream().map(PetDetailForm::from).collect(Collectors.toList());
+    }
+
+    return null;
+
+  }
+
+  /**
+   * 마이팻 수정
+   */
+  @Override
+  @Transactional
+  public void updatePet(PetDetailForm form) {
+
+    Pet pet = petRepository.findById(form.getId())
+        .orElseThrow(() -> new ButlerPetException(ErrorCode.PET_NOT_FOUND));
+
+    pet.setKind(form.getKind());
+    pet.setName(form.getName());
+
+  }
+
+  /**
+   * 마이팻 삭제
+   */
+  @Override
+  @Transactional
+  public void deletePet(long id) {
+
+    validateIfPetExist(id);
+
+    petRepository.deleteById(id);
+
+  }
+
+  private void validateIfPetExist(long id) {
+    if (!petRepository.existsById(id)) {
+      throw new ButlerPetException(ErrorCode.PET_NOT_FOUND);
+    }
+  }
 }

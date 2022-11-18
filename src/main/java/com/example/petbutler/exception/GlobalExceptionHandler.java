@@ -33,6 +33,20 @@ public class GlobalExceptionHandler {
     return "exception/error-msg";
   }
 
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(ButlerApiException.class)
+  public String handleButlerApiException(ButlerApiException e, Model model) {
+
+    ErrorCode errorCode = e.getErrorCode();
+
+    log.error("{} is occured.", errorCode.name());
+
+    model.addAttribute("errorResponse",
+        new ErrorResponse(errorCode.name(), errorCode.getMessage()));
+
+    return "exception/error-msg";
+  }
+
   @ExceptionHandler(ButlerCategoryException.class)
   public ResponseEntity handleButlerCategoryException(ButlerCategoryException e) {
 

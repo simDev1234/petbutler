@@ -6,6 +6,22 @@
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/popup.css">
   <link rel="stylesheet" href="/css/sign-up-email.css">
+  <style>
+    #close-x{
+      display : inline-block;
+      width : 40px;
+      height : 40px;
+      background-color: white;
+      color: black;
+      position: absolute;
+      top:0;
+      right:0;
+      font-size:20px;
+      padding:5px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -16,8 +32,8 @@
 
   <!-- Popup -->
   <div th:if="${not #strings.isEmpty(popupMsg)}" id = popup>
-    <h3 th:text="${popupTitle}">타이틀</h3>
-    <p th:text="${popupMsg}">내용<a id = "close-x" href = "#">x</a></p>
+    <div class = "title"><h3 th:text="${popupTitle}">타이틀</h3><a id = "close-x" onclick = "close()">x</a></div>
+    <p th:text="${popupMsg}">내용</p>
   </div>
 
   <!-- Register Pet Form -->
@@ -86,6 +102,10 @@
       console.log(err);
     });
 
+  }
+
+  function close(){
+    $("#popup").hide();
   }
 </script>
 </body>

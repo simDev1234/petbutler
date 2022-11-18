@@ -32,8 +32,17 @@ public enum ErrorCode {
   // pet (팻 관련 예외)
   PET_DATA_NOT_EXIST("팻 등록 정보가 정상적으로 전송되지 않았습니다.", HttpStatus.BAD_REQUEST),
 
+  PET_NOT_FOUND("해당 팻이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+
   // category (카테고리 관련 예외)
   INVALID_CATEGORY_DATA("카테고리 데이터가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
+
+  // api (동물 병원/동물 약국 관련 예외)
+  API_JSON_PARSE_EXCEPTION("해당 카테고리에 재고가 있는 상품이 있습니다.", HttpStatus.BAD_REQUEST),
+
+  API_DATA_ALREADY_EXIST("해당 데이터는 이미 등록된 데이터입니다.", HttpStatus.BAD_REQUEST),
+
+  API_DATA_HOSPITAL_SHUTDOWN("해당 동물 병원은 폐쇄되었습니다.", HttpStatus.BAD_REQUEST),
 
   // etc (기타 예외 발생 시)
   INTERNAL_SERVER_ERROR("요청 중 서버 내부에 문제가 발생했습니다.", HttpStatus.BAD_REQUEST),

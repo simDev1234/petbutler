@@ -2,7 +2,7 @@ package com.example.petbutler.model;
 
 import com.example.petbutler.persist.entity.User;
 import com.example.petbutler.persist.entity.Pet;
-import com.example.petbutler.utils.FilePath;
+import com.example.petbutler.utils.wrapper.FilePath;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -34,7 +34,7 @@ public class PetRegisterForm {
       pets.add(Pet.builder()
                   .user(user)
                   .kind(this.kind[i])
-                  .name(this.kind[i])
+                  .name(this.name[i])
                   .thumbnailLocalPath(newFilePaths.get(i).getLocalPath())
                   .thumbnailUrlPath(newFilePaths.get(i).getUrlPath())
                   .build());

@@ -1,5 +1,6 @@
 package com.example.petbutler.persist.entity;
 
+import com.example.petbutler.model.PetDetailForm;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

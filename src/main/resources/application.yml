@@ -13,7 +13,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     open-in-view: true
     properties:
       hibernate:
@@ -37,7 +37,18 @@ spring:
             trust: smtp.gmail.com
           starttls:
             enable: true
+
+  redis:
+    host: localhost
+    port: 6379
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      names: ${job.name:createAnimalHosptlJob}
+      enabled: false

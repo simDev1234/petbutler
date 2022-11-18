@@ -7,8 +7,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,27 +24,23 @@ import org.hibernate.envers.AuditOverride;
 @Getter
 @Setter
 @AuditOverride(forClass = BaseEntity.class)
-public class Product extends BaseEntity{
+public class AnimalHosptl extends BaseEntity{
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // 카테고리 분류
-  private String categoryMainCode;
-  private String categoryMediumCode;
-  private String categorySmallCode;
+  // 병원 정보
+  private String sigun;      // 시군명
+  private String hosptlName; // 사업장명
+  private String phone;      // 전화
+  private String address;    // 도로명 주소
+  private double lat;        // 위도
+  private double lon;        // 경도
 
-  // 이미지
-  private String thumbnailLocalPath;
-  private String thumbnailUrlPath;
-
-  // 제품 정보
-  private String brand;    // 제품 브랜드
-  private String name;     // 제품 이름
-  private String kind;     // 대상 동물 분류
-  private int    price;    // 정가
-  private int    discount; // 할인가
-  private int    stock;    // 재고
+  // 보유 물품
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn
+  private List<Product> products;
 
 }
