@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>마이페이지</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    table{
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border : 1px solid black;
+    }
+    th { width : 100px; }
+    td { width : 200px; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="/fragments/layout.html::#header"></div>
+  <div th:replace="/fragments/layout.html::#userNav-after"></div>
+
+  <!-- User info -->
+  <div class = "content-box">
+    <div class = "content" id = "user-box">
+      <h2>마이페이지</h2>
+      <table>
+        <tr>
+          <th>아이디</th>
+          <td id = email th:text="${user.email}">test@gmail.com</td>
+        </tr>
+        <tr>
+          <th>집사레벨</th>
+          <td>
+            <input id = butlerLevel th:value = "${user.butlerLevel}">
+          </td>
+        </tr>
+        <tr>
+          <th>핸드폰번호</th>
+          <td><input id = "phone" th:value="${user.phone}" value = 010-1234-5678></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="border:none; text-align: right">
+            <input type = "button" id = update value = "수정" onclick="update();">
+            <input type = "button" id = delete value = "탈퇴" onclick="deleteUser();">
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"/>
+  <script src="/js/common.js"></script>
+  <script>
+
+    function deleteUser(){
+
+      if (!confirm("정말 탈퇴하시겠습니까?")) {
+        return false;
+      }
+
+      const url = "/user/withdraw/" + $("#email").text();
+
+      axios.delete(url)
+      .then((res) => {
+        location.href="/";
+      })
+      .catch((error) => {
+        alert(error.response.data);
+      })
+    }
+
+    function update(){
+
+      const url = '/user/mypage';
+      const config = {
+        headers:{
+          "Content-Type":"application/json"
+        }
+      }
+
+      const data = {
+        email : $("#email").text(),
+        butlerLevel: $("#butlerLevel").val(),
+        phone: $("#phone").val()
+      }
+
+      axios.put(url, data, config)
+        .then((res) => {
+        location.reload();
+      })
+        .catch((error) => {
+        alert(error.response.data);
+      })
+
+    }
+
+  </script>
+
+</body>
+</html>

@@ -1,10 +1,18 @@
 package com.example.petbutler.service;
 
-import com.example.petbutler.dto.PetDto;
-import com.example.petbutler.entity.Customer;
-import com.example.petbutler.exception.ButlerUserException;
-import org.springframework.web.multipart.MultipartFile;
+import com.example.petbutler.model.PetDetailForm;
+import com.example.petbutler.model.PetRegisterForm;
+import com.example.petbutler.persist.entity.User;
+import java.util.List;
 
 public interface PetService {
-  boolean registerPetsWhenSignUp(Customer customer, PetDto[] petDtos, MultipartFile[] files) throws ButlerUserException;
+  void registerPetsWhenSignUp(User user, PetRegisterForm petRegisterForm);
+
+  boolean registerPetsAfterSignUp(String email, PetRegisterForm petRegisterForm);
+
+  List<PetDetailForm> getPetDetailByUserEmail(String email);
+
+  void updatePet(PetDetailForm form);
+
+  void deletePet(long id);
 }

@@ -1,6 +1,6 @@
 package com.example.petbutler.exception;
 
-import com.example.petbutler.exception.type.ErrorCode;
+import com.example.petbutler.exception.constants.ErrorCode;
 import lombok.Getter;
 
 @Getter

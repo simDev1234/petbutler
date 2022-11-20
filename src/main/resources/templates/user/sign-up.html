@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/sign-up-email.css">
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="/fragments/layout.html::#header"></div>
+  <div th:replace="/fragments/layout.html::#userNav-before"></div>
+
+  <!-- Sign-up Form -->
+  <div class="login-box">
+    <h2>회원 정보 입력</h2>
+    <form method = "post" enctype="multipart/form-data">
+      <fieldset id="userInfo">
+        <legend>회원 정보</legend>
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="email" placeholder="ex. hongildong@gmail.com" required>
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" placeholder="8자리 이상의 영문자, 숫자, 특수문자 모두 포함"
+               required>
+        <label for="rePassword">비밀번호 확인</label>
+        <input type="password" id="rePassword" placeholder="비밀번호 재입력" required>
+        <label for="butlerLevel">집사 경력을 입력해주세요.</label>
+        <div class = "butlerLevel">
+          <select>
+            <option value="">선택</option>
+            <option value="1">1년 미만</option>
+            <option value="2">2년</option>
+            <option value="3">3년</option>
+            <option value="4">4년</option>
+            <option value="5">5년</option>
+            <option value="직접입력">5년+</option>
+          </select>
+          <input type="text" id="butlerLevel" name="butlerLevel" readonly>
+        </div>
+        <label for="phone">휴대폰번호</label>
+        <input type="tel" id="phone" name="phoneNumber" placeholder="ex. 010-1234-5678">
+      </fieldset>
+      <fieldset id="pets">
+        <legend>사랑스런 내 새꾸들을 등록해주세요</legend>
+      </fieldset>
+      <input type="button" value="Add a field" class="add" id="add"/>
+      <button onclick="return register(this.form)">회원가입</button>
+    </form>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script rel="script" src="/js/sign-up-user.js"></script>
+  <script rel="script" src="/js/register-pets.js"></script>
+  <script src="/js/common.js"></script>
+</body>
+</html>

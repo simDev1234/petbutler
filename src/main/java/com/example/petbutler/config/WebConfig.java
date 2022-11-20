@@ -1,15 +1,15 @@
 package com.example.petbutler.config;
 
-import com.example.petbutler.type.UserRoleConverter;
+import org.json.simple.parser.JSONParser;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig {
 
-  @Override
-  public void addFormatters(FormatterRegistry registry) {
-    registry.addConverter(new UserRoleConverter());
+  @Bean
+  public JSONParser jsonParser(){
+    return new JSONParser();
   }
+
 }

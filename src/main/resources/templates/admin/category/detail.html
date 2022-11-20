@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>카테고리관리</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    .detail{
+      margin:100px auto auto auto;
+      width : 800px;
+      text-align: center;
+    }
+
+    table {
+      width : 100%;
+      margin:5px auto 5px auto;
+      border-collapse: collapse;
+    }
+
+    th,td{
+      border : 1px solid black;
+    }
+
+    th {
+      background-color: silver;
+    }
+
+    .buttons{
+      text-align: right;
+    }
+
+    h3{
+      text-align: left;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+<!--  <header>-->
+<!--    <div th:replace="/admin/fragments/layout.html::#header"></div>-->
+<!--    <div>-->
+<!--      <div th:replace="/admin/fragments/layout.html::#userNav"></div>-->
+<!--    </div>-->
+<!--  </header>-->
+
+  <!-- content -->
+  <div class = "content-box detail">
+    <form id = "detail-form">
+      <table>
+        <tr>
+          <th>분류코드</th>
+          <td>100000000</td>
+        </tr>
+        <tr>
+          <th>카테고리명</th>
+          <td>건식사료</td>
+        </tr>
+        <tr>
+          <th>상품수</th>
+          <td>122222</td>
+        </tr>
+        <tr>
+          <th>등록일</th>
+          <td th:text="${category.registeredAt}">2022-10-22</td>
+        </tr>
+        <tr>
+          <th>수정일</th>
+          <td th:text="${category.updatedAt}">2022-11-11</td>
+        </tr>
+      </table>
+      <div class = "buttons">
+        <input id = "update" type = "button" value = "수정">
+        <input id = "list" type = "button" value = "목록" onclick="location.href = '/admin/category/list.do'">
+      </div>
+    </form>
+  </div>
+  <footer>
+    <div class = "content">
+      <h3>프로젝트 개요</h3>
+      <p>작업자 : simDev1234@gmail.com</p>
+      <p>깃허브 : <a href = "https://github.com/simDev1234">https://github.com/simDev1234</a></p>
+      <p>티스토리 : <a href = "https://why-dev.tistory.com/" target="_blank">https://why-dev.tistory.com/</a></p>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script src="/js/common.js"></script>
+  <script>
+    $(function(){
+
+      $("#update").on('click', function(){
+
+        const url = '/admin/user/update.do';
+        const config = {
+          headers: {
+            "Content-Type": "application/json"
+          },
+        };
+
+        const formData = new FormData();
+        const email = $("#email").text();
+        formData.append("email", email);
+        formData.append("userStatus", $("select[name = userStatus] option:selected").val());
+        formData.append("userRole", $("select[name = userRole] option:selected").val());
+        formData.append("phone", $("input[name=phone]").val());
+
+        axios.patch(url, formData, config).then(function (response) {
+
+          // 정상적일 때
+          location.href = "/admin/user/list.do";
+
+        }).catch(function (err) {
+          console.log(err);
+        });
+
+      });
+
+    });
+  </script>
+</body>
+</html>

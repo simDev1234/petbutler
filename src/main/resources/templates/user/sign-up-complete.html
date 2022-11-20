@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>이메일 등록 완료</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    .msg-box{
+      margin-top:20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="/fragments/layout.html::#header"></div>
+
+  <div th:if="${not #strings.isEmpty(email)}">
+    <p>작성한 <span th:text="${email}"></span>이메일로 인증 메일을 보냈습니다.</p>
+    <p>이메일에서 인증 버튼을 선택한 후, 나머지 가입 절차를 완료해주세요.</p>
+  </div>
+
+  <div class = "msg-box" th:if="${not #strings.isEmpty(error)}">
+    <p>작성한 <span th:text="${error}"></span>에러가 발생했습니다.</p>
+  </div>
+  <script src="/js/common.js"></script>
+</body>
+</html>
