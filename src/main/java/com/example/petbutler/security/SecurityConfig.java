@@ -1,6 +1,5 @@
 package com.example.petbutler.security;
 
-import com.example.petbutler.model.constants.UserRole;
 import com.example.petbutler.security.authentication.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,10 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/user/email-auth/**"
         )
         .permitAll();
-
-    http.authorizeRequests()
-        .antMatchers("/admin/*", "/admin/**")
-        .hasAuthority(UserRole.ROLE_ADMIN.name());
 
     http.exceptionHandling()
         .accessDeniedPage("/error/access-denied");

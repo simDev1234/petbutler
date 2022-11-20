@@ -1,6 +1,7 @@
 package com.example.petbutler.admin.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AdminUserSearchForm {
+@Builder
+public class AdminProductAddForm {
 
-  private String searchKey;
-  private String searchValue;
+  long productId;
+
+  long hosptlId;
 
 }

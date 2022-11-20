@@ -31,6 +31,8 @@ public class AdminProductSearchForm {
 
   private Page<Product> pageResult;
 
+  private String hosptlName;
+
   public Division getDivision(){
 
     // 아무 분류도 선택하지 않은 경우

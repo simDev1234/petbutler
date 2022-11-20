@@ -102,14 +102,10 @@ public class User extends BaseEntity implements UserDetails {
 
   public AdminUserDetailForm toUserDetailForm() {
 
-    boolean isAdmin = this.getUserRoles().contains(UserRole.ROLE_ADMIN);
-
-    UserRole role = isAdmin? UserRole.ROLE_ADMIN : UserRole.ROLE_REGULAR;
-
     return AdminUserDetailForm.builder()
         .email(this.getEmail())
         .userStatus(this.getUserStatus())
-        .userRole(role)
+        .userRole(UserRole.getUserRole(this.getUserRoles()).name())
         .butlerLevel(this.getButlerLevel())
         .phone(this.getPhone())
         .registeredAt(this.getRegisteredAt())

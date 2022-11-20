@@ -1,7 +1,7 @@
 package com.example.petbutler.admin.web;
 
 import com.example.petbutler.admin.model.AdminProductSearchForm;
-import com.example.petbutler.admin.service.AdminProductServiceImpl;
+import com.example.petbutler.admin.service.impl.AdminProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,6 @@ public class AdminProductController {
 
     return "admin/product/list";
   }
-
 
   /**
    * 상품 등록

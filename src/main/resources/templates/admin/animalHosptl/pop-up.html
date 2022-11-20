@@ -2,12 +2,20 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>상품관리</title>
+  <title>상품 등록 팝업</title>
   <link rel="stylesheet" href="/css/common.css">
   <style>
+    body{
+      margin-top:0;
+    }
+
+    h2{
+      text-align: left;
+    }
+
     .list{
-      margin:100px auto auto auto;
-      width : 1200px;
+      padding : 0px 20px;
+      heigth : auto;
       text-align: center;
     }
 
@@ -18,7 +26,6 @@
     }
 
     .search-box{
-      width : 800px;
       text-align:left;
     }
 
@@ -66,30 +73,18 @@
       display: block;
       cursor:pointer;
     }
-
-    .pagination #register-btn{
-      position: absolute;
-      right : 0; top: 0;
-    }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div th:replace="/admin/fragments/layout.html::#header"></div>
-    <div>
-      <div th:replace="/admin/fragments/layout.html::#userNav"></div>
-    </div>
-  </header>
-
   <!-- content -->
-  <div class = "content-box list">
+  <div class = "list">
+    <h2>상품 선택</h2>
     <div class = "description">
-      <p>* 상품분류를 선택 : 대분류(대분류만 선택), 중분류(대분류, 중분류 선택), 소분류(대분류, 중분류, 소분류 선택)</p>
+      <p>* 병원이 보유하는 상품을 선택해주세요. [등록]을 누르면 해당 상품이 등록됩니다.</p>
     </div>
     <div class = "box list-box">
-      <form id = "list-form" method = "get" action = "/admin/product/list.do">
+      <form id = "list-form" method = "get" action = "/admin/animalHosptl/product-popup.do">
         <div class = "search-box">
           <table>
             <tr>
@@ -142,8 +137,8 @@
               <td th:text="${x.discount}">19000</td>
               <td th:text="${x.stock}">10</td>
               <td>
-                <input type = "button" value = "수정">
-                <input type = "button" value = "삭제">
+                <input type = "hidden" name = "id" th:value="${x.id}">
+                <input type = "button" value = "등록" class = "setProductId-btn">
               </td>
             </tr>
           </table>
@@ -166,19 +161,11 @@
             <li><a>>></a></li>
           </ul>
           <input type = "hidden" name = "page" th:value="${data.pageResult.pageable.pageNumber}">
-          <input id = "register-btn" type="button" value = "등록">
+          <input type = "hidden" name = "hosptlName" th:value="${data.hosptlName}">
         </div>
       </form>
     </div>
   </div>
-  <footer>
-    <div class = "content">
-      <h3>프로젝트 개요</h3>
-      <p>작업자 : simDev1234@gmail.com</p>
-      <p>깃허브 : <a href = "https://github.com/simDev1234">https://github.com/simDev1234</a></p>
-      <p>티스토리 : <a href = "https://why-dev.tistory.com/" target="_blank">https://why-dev.tistory.com/</a></p>
-    </div>
-  </footer>
 
   <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
           integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
@@ -224,7 +211,40 @@
 
       });
 
+      $('.setProductId-btn').on('click', function(){
+
+        let productId = $(this).prev().val();
+        let hosptlId = opener.$("#forChild").val();
+
+        const url = '/admin/animalHosptl/product-add.do';
+        const config = {
+          headers: {
+            "Content-Type": "application/json"
+          },
+        };
+        const data = {
+          productId : productId,
+          hosptlId  : hosptlId
+        }
+
+        axios.put(url, data, config).then(function (response) {
+
+          // 정상적일 때
+          opener.location.reload();
+          window.close();
+
+        }).catch(function (err) {
+
+          // 실패시
+          opener.location.reload();
+          window.close();
+
+        });
+
+      });
+
     });
+
   </script>
 </body>
 </html>

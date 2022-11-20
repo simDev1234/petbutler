@@ -1,6 +1,9 @@
-package com.example.petbutler.admin.service;
+package com.example.petbutler.admin.service.impl;
 
 import com.example.petbutler.admin.model.AdminProductSearchForm;
+import com.example.petbutler.admin.service.AdminProductService;
+import com.example.petbutler.exception.ButlerProductException;
+import com.example.petbutler.exception.constants.ErrorCode;
 import com.example.petbutler.persist.CategoryRepository;
 import com.example.petbutler.persist.ProductRepository;
 import com.example.petbutler.persist.entity.Category;
@@ -16,12 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AdminProductServiceImpl {
+public class AdminProductServiceImpl implements AdminProductService {
 
   private final ProductRepository productRepository;
 
   private final CategoryRepository categoryRepository;
 
+  /**
+   * 상품 조회
+   */
   @Transactional
   public AdminProductSearchForm getProductList(AdminProductSearchForm form, Pageable pageable) {
 
@@ -35,6 +41,7 @@ public class AdminProductServiceImpl {
 
   }
 
+  
   private void setPageResultBySearchFilter(AdminProductSearchForm form, Pageable pageable) {
 
     // 검색 필터링X : 상품분류 미선택, 검색어 입력 X
@@ -113,4 +120,13 @@ public class AdminProductServiceImpl {
 
   }
 
+  /**
+   * 특정 상품 조회
+   */
+  public Product findProductById(long productId) {
+
+    return productRepository.findById(productId)
+        .orElseThrow(() -> new ButlerProductException(ErrorCode.PRODUCT_NOT_FOUND));
+
+  }
 }

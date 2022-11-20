@@ -64,15 +64,16 @@
     <form id = "list-form" method = "get" action = "/admin/user/list.do">
       <div class = "search-box">
         <select name = "searchKey">
-          <option value = "all" th:selected="${#strings.equals(searchKey, 'all')}">전체</option>
-          <option value = "regular" th:selected="${#strings.equals(searchKey, 'regular')}">일반회원</option>
-          <option value = "admin" th:selected="${#strings.equals(searchKey, 'admin')}">관리자</option>
+          <option value = "all" th:selected="${#strings.equals(data.searchKey, 'all')}">전체</option>
+          <option value = "regular" th:selected="${#strings.equals(data.searchKey, 'regular')}">일반회원</option>
+          <option value = "admin" th:selected="${#strings.equals(data.searchKey, 'admin')}">관리자</option>
         </select>
-        <input name = "searchValue" type="text" placeholder="검색어 입력" th:value="${searchValue}">
+        <input name = "searchValue" type="text" placeholder="아이디 검색" th:value="${searchValue}">
         <input type="submit" value = "검색">
       </div>
       <table>
         <tr>
+          <th>no</th>
           <th>아이디</th>
           <th>연락처</th>
           <th>회원상태</th>
@@ -81,11 +82,12 @@
           <th>등록일</th>
           <th>수정일</th>
         </tr>
-        <tr th:each="user : ${pageResult}">
+        <tr th:each="user, i : ${data.pageResult.content}">
+          <td th:text="${(data.pageResult.pageable.pageNumber + 1) * data.pageResult.size - i.count}"></td>
           <td><a th:text="${user.email}" th:href = "'/admin/user/detail.do?email=' + ${user.email}">test@gmail.com</a></td>
           <td th:text="${user.phone}">010-1234-5678</td>
-          <td th:text="${user.userStatus}">활성화</td>
-          <td th:text="${user.userRole}">관리자</td>
+          <td th:text="${user.userStatus.getDescription()}">활성화</td>
+          <td th:text="${user.userRole.getDescription()}">관리자</td>
           <td th:text="${user.butlerLevel}">1</td>
           <td th:text="${#temporals.format(user.registeredAt, 'yyyy-MM-dd')}">2022-10-11</td>
           <td th:text="${#temporals.format(user.updatedAt, 'yyyy-MM-dd')}">2022-11-11</td>
@@ -109,7 +111,7 @@
           <li><a>>></a></li>
         </ul>
       </div>
-      <input type = "hidden" name = "page" th:value="${pageResult.pageable.pageNumber}">
+      <input type = "hidden" name = "page" th:value="${data.pageResult.pageable.pageNumber}">
     </form>
   </div>
 
@@ -129,17 +131,17 @@
   <script th:inline="javascript">
     $(function(){
 
-      let page = [[${pageResult.pageable.pageNumber}]];
-      let page_first = parseInt(page) % 10 + 1;
-      let total = [[${pageResult.totalPages}]];
+      let page = [[${data.pageResult.pageable.pageNumber}]];
+      let page_first = Math.floor(page / 10) * 10;
+      let total = [[${data.pageResult.totalPages}]];
 
       // 현재 페이지 on
-      $(".pagination ul").children('li:eq(' + (page + 2) + ')').addClass('on');
+      $(".pagination ul").children('li:eq(' + ((page % 10) + 2) + ')').addClass('on');
       $("input[name = page]").val(page);
 
       // 첫페이지부터 10개 페이지 표시
-      for (let i = 2; i < 12; i++) {
-        $(".pagination ul").children('li:eq(' + i + ') a').text(page_first + i - 2);
+      for (let i = 0; i < 10; i++) {
+        $('.pagination ul li:eq(' + (i + 2) + ') a').html(page_first + 1 + i);
       }
 
       // 페이지 클릭 시

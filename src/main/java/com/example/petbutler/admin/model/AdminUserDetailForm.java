@@ -21,7 +21,7 @@ public class AdminUserDetailForm {
 
   private String email;
 
-  private UserRole userRole;
+  private String userRole;
 
   private UserStatus userStatus;
 
@@ -35,15 +35,14 @@ public class AdminUserDetailForm {
 
   private List<PetDetailForm> pets;
 
-
   public List<String> getRoles() {
 
-    if (this.userRole.isAdmin()) {
+    if (UserRole.isAdmin(userRole)) {
       return Arrays.asList(UserRole.ROLE_REGULAR.name(), UserRole.ROLE_ADMIN.name());
 
     }
 
-    return Arrays.asList(UserRole.ROLE_ADMIN.name());
+    return Arrays.asList(UserRole.ROLE_REGULAR.name());
   }
 
 }

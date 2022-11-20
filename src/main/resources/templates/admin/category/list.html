@@ -295,17 +295,17 @@
 
       });
 
-      let page = [[${pageResult.pageable.pageNumber}]];
-      let page_first = parseInt(page) % 10 + 1;
-      let total = [[${pageResult.totalPages}]];
+      let page = [[${data.pageResult.pageable.pageNumber}]];
+      let page_first = Math.floor(page / 10) * 10;
+      let total = [[${data.pageResult.totalPages}]];
 
       // 현재 페이지 on
-      $(".pagination ul").children('li:eq(' + (page + 2) + ')').addClass('on');
+      $(".pagination ul").children('li:eq(' + ((page % 10) + 2) + ')').addClass('on');
       $("input[name = page]").val(page);
 
       // 첫페이지부터 10개 페이지 표시
-      for (let i = 2; i < 12; i++) {
-        $(".pagination ul").children('li:eq(' + i + ') a').text(page_first + i - 2);
+      for (let i = 0; i < 10; i++) {
+        $('.pagination ul li:eq(' + (i + 2) + ') a').html(page_first + 1 + i);
       }
 
       // 페이지 클릭 시

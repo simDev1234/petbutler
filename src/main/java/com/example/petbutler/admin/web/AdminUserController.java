@@ -1,7 +1,8 @@
 package com.example.petbutler.admin.web;
 
 import com.example.petbutler.admin.model.AdminUserDetailForm;
-import com.example.petbutler.admin.model.AdminUserSearchForm;
+import com.example.petbutler.admin.model.AdminUserInfo;
+import com.example.petbutler.admin.model.AdminUserListForm;
 import com.example.petbutler.admin.service.AdminUserService;
 import com.example.petbutler.model.constants.UserRole;
 import com.example.petbutler.persist.UserRepository;
@@ -36,35 +37,16 @@ public class AdminUserController {
    * 회원 목록 조회
    */
   @GetMapping("/list.do")
-  public String getUserList(AdminUserSearchForm adminUserSearchForm,
+  public String getUserList(AdminUserListForm adminUserListForm,
                             @PageableDefault(sort = "registeredAt",
                                 direction = Direction.DESC) Pageable pageable,
                             Model model) {
 
-    Page<User> pageResult;
-    String searchKey = adminUserSearchForm.getSearchKey();
-    String searchValue = adminUserSearchForm.getSearchValue();
+    Page<AdminUserInfo> pageResult = adminUserService.getAdminUserList(adminUserListForm, pageable);
 
-    // 검색어 입력 시 필터링
-    if (!StringUtils.isNullOrEmpty(searchKey)) {
-      // 구분 : 전체
-      if ("all".equals(searchKey)) {
-        pageResult = userRepository.findAllByEmailContainsIgnoreCase(searchValue, pageable);
-      } 
-      // 구분 : 일반 회원 or 관리자
-      else {
-        UserRole userRole = UserRole.getUserRole(String.format("ROLE_%s", searchValue.toUpperCase()));
-        pageResult = userRepository.findAllByUserRolesContainingAndEmailContainsIgnoreCase(userRole, searchValue, pageable);
-      }
-      model.addAttribute("searchKey", searchKey);
-      model.addAttribute("searchValue", searchValue);
-    }
-    // 아닐 경우 전체 중 현재페이지부터 10개
-    else {
-      pageResult = userRepository.findAll(pageable);
-    }
+    adminUserListForm.setPageResult(pageResult);
 
-    model.addAttribute("pageResult", pageResult);
+    model.addAttribute("data", adminUserListForm);
 
     return "admin/user/list";
   }

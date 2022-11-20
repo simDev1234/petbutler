@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>상품관리</title>
+  <title>동물 병원 관리</title>
   <link rel="stylesheet" href="/css/common.css">
   <style>
     .list{
@@ -67,9 +67,28 @@
       cursor:pointer;
     }
 
-    .pagination #register-btn{
-      position: absolute;
-      right : 0; top: 0;
+    .show-products-popup{
+      width:400px; height:300px; padding-top:30px; box-sizing: border-box;
+      background-color: cornsilk; border: 1px solid black;
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    }
+
+    .popup-title{
+      width:400px; height:30px; margin:0; padding:3px 10px; box-sizing: border-box;
+      font-size:16px; text-align: left; color:white;
+      background-color: black;
+      position:absolute; top:0; left:0;
+    }
+
+    .close-x{
+      display: inline-block; width:30px; height:30px; cursor:pointer;
+      font-size:16px; text-align: center; color:white;
+      position:absolute; top:5px; right:0;
+    }
+
+    .popup-content{
+      overflow-y:auto;
+      min-height:100px; padding:10px;
     }
   </style>
 </head>
@@ -85,67 +104,42 @@
 
   <!-- content -->
   <div class = "content-box list">
-    <div class = "description">
-      <p>* 상품분류를 선택 : 대분류(대분류만 선택), 중분류(대분류, 중분류 선택), 소분류(대분류, 중분류, 소분류 선택)</p>
-    </div>
     <div class = "box list-box">
-      <form id = "list-form" method = "get" action = "/admin/product/list.do">
+      <form id = "list-form" method = "get" action = "/admin/animalHosptl/list.do">
         <div class = "search-box">
-          <table>
-            <tr>
-              <th>상품분류</th>
-              <td>
-                <select name = "main">
-                  <option value = "none">대분류</option>
-                  <option th:each="x : ${data.mains}" th:value = "${x.code}" th:text="${x.name}"
-                          th:selected="${#strings.equals(x.code, data.main)}"></option>
-                </select>
-                <select name = "medium">
-                  <option value = "none">중분류</option>
-                  <option th:each="x : ${data.mediums}" th:value = "${x.code}" th:text="${x.name}"
-                          th:selected="${#strings.equals(x.code, data.medium)}"></option>
-                </select>
-                <select name = "small">
-                  <option value = "none">소분류</option>
-                  <option th:each="x : ${data.smalls}" th:value = "${x.code}" th:text="${x.name}"
-                          th:selected="${#strings.equals(x.code, data.small)}"></option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>검색조건</th>
-              <td>
-                <select name = "searchKey">
-                  <option th:selected="${#strings.equals('name', data.searchKey)}" value = "name">상품명</option>
-                  <option th:selected="${#strings.equals('brand', data.searchKey)}" value = "brand">브랜드</option>
-                </select>
-                <input th:value="${data.searchValue}" name = "searchValue">
-                <input type = "submit" value = "검색">
-              </td>
-            </tr>
-          </table>
+          <select name = "searchKey">
+            <option th:selected="${#strings.equals(data.searchKey, 'sigun')}" value = "sigun">시군구</option>
+            <option th:selected="${#strings.equals(data.searchKey, 'hosptlName')}" value = "hosptlName">병원명</option>
+          </select>
+          <input th:value="${data.searchValue}" name = "searchValue">
+          <input type = "submit" value = "검색">
         </div>
         <div class = "product-list">
           <table>
             <tr>
               <th>no</th>
-              <th>상품명</th>
-              <th>정가</th>
-              <th>할인가</th>
-              <th>재고</th>
-              <th>기능</th>
+              <th>시군명</th>
+              <th>병원명</th>
+              <th>전화번호</th>
+              <th>도로명 주소</th>
+              <th>보유상품</th>
+              <th>상품등록</th>
             </tr>
-            <tr th:each = "x, i : ${data.pageResult.content}">
-              <td th:text="${i.count + (data.pageResult.pageable.pageNumber * data.pageResult.size)}">1</td>
-              <td th:text="${x.name}">냠냠먹이</td>
-              <td th:text="${x.price}">21000</td>
-              <td th:text="${x.discount}">19000</td>
-              <td th:text="${x.stock}">10</td>
+            <tr th:each="x, i : ${data.pageResult.content}">
+              <td th:text="${i.count + (data.pageResult.pageable.pageNumber * data.pageResult.size)}"></td>
+              <td th:text="${x.sigun}"></td>
+              <td th:text="${x.hosptlName}"></td>
+              <td th:text="${x.phone}"></td>
+              <td th:text="${x.address}"></td>
               <td>
-                <input type = "button" value = "수정">
-                <input type = "button" value = "삭제">
+                <input class = "openPopup-showProducts-btn" type = "button" value = "상품보기">
+              </td>
+              <td>
+                <input type = "hidden" name = "hosptlId" th:value="${x.id}">
+                <input class ="openPopup-addProduct-btn" type = "button" value = "상품등록">
               </td>
             </tr>
+            <input type = "hidden" id = "forChild">
           </table>
         </div>
         <div class = "pagination">
@@ -166,7 +160,6 @@
             <li><a>>></a></li>
           </ul>
           <input type = "hidden" name = "page" th:value="${data.pageResult.pageable.pageNumber}">
-          <input id = "register-btn" type="button" value = "등록">
         </div>
       </form>
     </div>
@@ -180,12 +173,18 @@
     </div>
   </footer>
 
+  <div class = "show-products-popup">
+    <h2 class = "popup-title">보유 상품<a class = "close-x">X</a></h2>
+    <p class = "popup-content">샘플 데이터</p>
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
           integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
           crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
   <script src="/js/common.js"></script>
   <script>
+
     $(function(){
 
       let page = [[${data.pageResult.pageable.pageNumber}]];
@@ -221,6 +220,58 @@
         $("input[name = page]").val(newPage);
 
         $("#list-form").submit();
+
+      });
+
+      // 상품 등록 팝업 열기
+      $(".openPopup-addProduct-btn").on('click',function(){
+
+        // 팝업에 전달할 병원 id
+        let $hopstlId = $(this).prev();
+        $("#forChild").val($hopstlId.val());
+
+        // 빈창 팝업 생성
+        var url = "/admin/animalHosptl/product-popup.do";
+        var windowTargetName = "product-popup";
+        var features = "scrollbars=yes,width=800,height=550,location=no, resizable=yes";
+        window.open(url, windowTargetName, features);
+
+      });
+
+      $(".show-products-popup").hide();
+
+      // 보유 상품 보기 팝업 열기
+      $(".openPopup-showProducts-btn").on('click',function(){
+
+        // 팝업에 전달할 병원 id
+        let $parent = $(this).parent();
+        let $td = $parent.next();
+        let $id = $td.children("input[name=hosptlId]");
+        $("#forChild").val($id.val());
+        console.log($id.val());
+
+        // 빈창 팝업 생성
+        const url = '/admin/animalHosptl/product-show.do/'+$id.val();
+
+        axios.get(url).then(function (response) {
+
+          // 정상적일 때
+          $(".popup-content").text(response.data);
+
+          $(".show-products-popup").show();
+
+        }).catch(function (err) {
+
+          // 실패시
+          alert("등록된 상품이 없습니다.");
+
+        });
+
+      });
+
+      $(".show-products-popup .close-x").on('click',function(){
+
+        $(".show-products-popup").hide();
 
       });
 

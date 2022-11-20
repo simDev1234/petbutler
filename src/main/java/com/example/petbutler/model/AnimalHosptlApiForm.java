@@ -14,6 +14,10 @@ import lombok.Setter;
 @Builder
 public class AnimalHosptlApiForm {
 
+  // 현재 위치
+  private double currentLat;
+  private double currentLon;
+
   // 병원 정보
   private String sigun;      // 시군명
   private String hosptlName; // 사업장명
