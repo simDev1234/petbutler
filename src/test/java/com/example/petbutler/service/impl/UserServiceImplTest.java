@@ -8,17 +8,17 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.example.petbutler.model.UserSearch;
+import com.example.petbutler.model.UserDetailForm;
 import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.model.PetRegisterForm;
 import com.example.petbutler.persist.entity.User;
 import com.example.petbutler.persist.entity.Pet;
 import com.example.petbutler.exception.ButlerUserException;
-import com.example.petbutler.exception.type.ErrorCode;
+import com.example.petbutler.exception.constants.ErrorCode;
 import com.example.petbutler.persist.UserRepository;
 import com.example.petbutler.service.PetService;
-import com.example.petbutler.type.UserRole;
-import com.example.petbutler.type.UserStatus;
+import com.example.petbutler.model.constants.UserRole;
+import com.example.petbutler.model.constants.UserStatus;
 import com.example.petbutler.utils.EmailSendUtils;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -151,7 +151,7 @@ class UserServiceImplTest {
         .willReturn(Optional.empty());
 
     given(userRepository.save(any()))
-        .willReturn(User.of(userSignUpForm));
+        .willReturn(User.toEntity(userSignUpForm));
 
     given(petService.registerPetsWhenSignUp(any(), any()))
         .willReturn(pets);
@@ -278,7 +278,7 @@ class UserServiceImplTest {
         .willReturn(Optional.of(user));
 
     // when
-    UserSearch detail = UserService.getUserDetailByEmail(email);
+    UserDetailForm detail = UserService.getUserDetailByEmail(email);
 
     // then
     assertEquals("test@gmail.com", detail.getEmail());
@@ -294,7 +294,7 @@ class UserServiceImplTest {
     //given
     String email = "test@gmail.com";
 
-    UserSearch detail = UserSearch.builder()
+    UserDetailForm detail = UserDetailForm.builder()
                                           .butlerLevel(2)
                                           .phone("010-5678-9876")
                                           .build();
@@ -318,7 +318,7 @@ class UserServiceImplTest {
     //given
     String email = "test@gmail.com";
 
-    UserSearch detail = UserSearch.builder()
+    UserDetailForm detail = UserDetailForm.builder()
                                           .butlerLevel(2)
                                           .phone("010-5678-9876")
                                           .build();
