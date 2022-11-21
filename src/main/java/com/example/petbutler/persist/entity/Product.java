@@ -41,9 +41,5 @@ public class Product extends BaseEntity{
   // 제품 정보
   private String brand;    // 제품 브랜드
   private String name;     // 제품 이름
-  private String kind;     // 대상 동물 분류
-  private int    price;    // 정가
-  private int    discount; // 할인가
-  private int    stock;    // 재고
 
 }

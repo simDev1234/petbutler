@@ -10,7 +10,7 @@ import com.example.petbutler.persist.entity.Product;
 import io.netty.util.internal.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,10 +50,11 @@ public class AdminAnimalHosptlServiceImpl implements AdminAnimalHosptlService {
 
   /**
    * 동물병원에 상품 등록하기
+   * - 동물병원에 이미 해당 상품이 등록된 경우 실패 응답
    */
   @Override
   @Transactional
-  public void addProductToAnimalHosptl(long hosptlId, Product product) {
+  public void addProductToAnimalHosptl(Long hosptlId, Product product) {
 
     AnimalHosptl animalHosptl = animalHosptlRepository.findById(hosptlId)
         .orElseThrow(() -> new ButlerApiException(ErrorCode.API_DATA_HOSPITAL_NOT_FOUND));
@@ -64,27 +65,60 @@ public class AdminAnimalHosptlServiceImpl implements AdminAnimalHosptlService {
       products = new ArrayList();
     }
 
+    validateIfProductAlreadyExist(product, products);
+
     products.add(product);
 
     animalHosptl.setProducts(products);
 
   }
 
+  private static void validateIfProductAlreadyExist(Product product, List<Product> products) {
+
+    if (products.contains(product)) {
+      throw new ButlerApiException(ErrorCode.API_DATA_ALREADY_EXIST);
+    }
+
+  }
+
   /**
    * 동물병원 보유상품 보기
-   *
-   * @return
    */
   @Override
-  public List<Product> getProductsFromHospl(long id) {
+  public String getProductsFromHospl(Long id) {
 
     AnimalHosptl animalHosptl = animalHosptlRepository.findById(id)
         .orElseThrow(() -> new ButlerApiException(ErrorCode.API_DATA_HOSPITAL_NOT_FOUND));
 
-    if (Objects.isNull(animalHosptl.getProducts())) {
-      new ButlerApiException(ErrorCode.API_DATA_HOSPITAL_HAS_NO_PRODUCTS);
+    List<Product> products = animalHosptl.getProducts();
+
+    // 병원에 상품이 있는 경우
+    if (!CollectionUtils.isEmpty(products)){
+
+      // 중복 데이터 삭제(상품 등록 코드 작업 초기에 중복된 데이터 발생하였음)
+      products = products.stream().distinct().collect(Collectors.toList());
+
+      // 상품 리스트를 문자열(ex. 츄르, 개껌)로 반환
+      return productsToString(products);
+
     }
 
-    return animalHosptl.getProducts();
+    return "상품이 없습니다.";
   }
+
+  private static String productsToString(List<Product> products) {
+
+    StringBuilder sb = new StringBuilder();
+
+    for (int i = 0; i < products.size(); i++) {
+      if (i == 0) {
+        sb.append(products.get(i).getName());
+      } else {
+        sb.append(String.format(", %s", products.get(i).getName()));
+      }
+    }
+
+    return sb.toString();
+  }
+
 }

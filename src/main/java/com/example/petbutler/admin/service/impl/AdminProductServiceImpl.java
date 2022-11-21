@@ -9,6 +9,7 @@ import com.example.petbutler.persist.ProductRepository;
 import com.example.petbutler.persist.entity.Category;
 import com.example.petbutler.persist.entity.Product;
 import com.example.petbutler.model.constants.Division;
+import com.mysql.cj.util.StringUtils;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -40,31 +41,73 @@ public class AdminProductServiceImpl implements AdminProductService {
     return form;
 
   }
-
   
   private void setPageResultBySearchFilter(AdminProductSearchForm form, Pageable pageable) {
 
-    // 검색 필터링X : 상품분류 미선택, 검색어 입력 X
-    if (Objects.isNull(form.getDivision()) && Objects.isNull(form.getSearchValue())) {
+    // 카테고리 분류가 없는 경우
+    if (StringUtils.isNullOrEmpty(form.getSearchKey())){
+
       form.setPageResult(productRepository.findAll(pageable));
-    }
-
-    // 검색 필터링을 걸은 경우
-    String searchKey    = form.getSearchKey();
-    String searchValue  = form.getSearchValue();
-
-    if ("name".equals(searchKey)) {
-
-      form.setPageResult(findAllByCategoryCodeAndName(form.getDivision(), form.getCategoryCode(), searchValue, pageable));
-
-      System.out.println(findAllByCategoryCodeAndName(form.getDivision(), form.getCategoryCode(), searchValue, pageable).toString());
-
-    } else if ("brand".equals(searchKey)){
-
-      form.setPageResult(findAllByCategoryCodeAndBrand(form.getDivision(), form.getCategoryCode(), searchValue, pageable));
 
     }
+    // 카테고리 분류가 있는 경우
+    else {
 
+      // 검색어를 입력한 경우
+      if (!StringUtils.isNullOrEmpty(form.getSearchValue())) {
+
+        setPageResultWhenSearchValueExist(form, pageable);
+
+      }
+      // 검색어를 입력하지 않은 경우
+      else {
+
+        setPageResultWhenSearchValueNotExist(form, pageable);
+
+      }
+    }
+  }
+
+  private void setPageResultWhenSearchValueExist(AdminProductSearchForm form, Pageable pageable) {
+
+    if ("name".equals(form.getSearchKey())) {
+
+      form.setPageResult(findAllByCategoryCodeAndName(form.getDivision(), form.getCategoryCode(),
+          form.getSearchValue(), pageable));
+
+    } else if ("brand".equals(form.getSearchKey())){
+
+      form.setPageResult(findAllByCategoryCodeAndBrand(form.getDivision(), form.getCategoryCode(),
+          form.getSearchValue(), pageable));
+
+    }
+
+  }
+
+  private void setPageResultWhenSearchValueNotExist(AdminProductSearchForm form, Pageable pageable){
+
+    form.setPageResult(findAllByCategoryCode(form.getDivision(), form.getCategoryCode(),
+        form.getSearchValue(), pageable));
+
+  }
+
+  private Page<Product> findAllByCategoryCode(Division division, String categoryCode, String searchValue, Pageable pageable) {
+    // 대분류만 검색
+    if (Division.MAIN.equals(division)) {
+      return productRepository.findAllByCategoryMainCode(categoryCode, pageable);
+    }
+    // 중분류까지 검색
+    else if (Division.MEDIUM.equals(division)) {
+      return productRepository.findAllByCategoryMediumCode(categoryCode, pageable);
+    }
+    // 소분류까지 검색
+    else if (Division.SMALL.equals(division)){
+      return productRepository.findAllByCategorySmallCode(categoryCode, pageable);
+    }
+    // 아무 분류도 선택하지 않은 경우
+    else {
+      return productRepository.findAll(pageable);
+    }
   }
 
   private Page<Product> findAllByCategoryCodeAndName(Division division, String categoryCode, String name, Pageable pageable) {
