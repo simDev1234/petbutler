@@ -39,6 +39,6 @@ public interface AnimalHosptlRepository extends JpaRepository<AnimalHosptl, Long
           + "where t.distance <= ?3 "
           + "order by t.distance "
       , nativeQuery = true)
-  List<AnimalHosptl> findNearTenHosptls(double lat, double lon, double distance);
+  List<AnimalHosptl> findNearXKmHosptls(double lat, double lon, double distance);
 
 }
