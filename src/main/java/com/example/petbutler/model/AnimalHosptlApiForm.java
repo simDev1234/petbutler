@@ -18,6 +18,9 @@ public class AnimalHosptlApiForm {
   private double currentLat;
   private double currentLon;
 
+  // 현재 지도 레벨
+  private int level;
+
   // 병원 정보
   private String sigun;      // 시군명
   private String hosptlName; // 사업장명
