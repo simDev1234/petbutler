@@ -192,6 +192,9 @@
       // 지도의 현재 레벨을 얻어옵니다
       level = map.getLevel();
 
+      // 현재 레벨을 중심으로 새로 데이터를 업데이트합니다.
+      getLocation();
+
     });
 
     function getHospitalDetail(marker, map){
