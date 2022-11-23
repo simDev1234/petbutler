@@ -7,7 +7,6 @@ import com.example.petbutler.service.AnimalHosptlService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +29,8 @@ public class AnimalHosptlServiceImpl implements AnimalHosptlService {
     // 반경 몇 km 까지 확인할 것인지
     double distance = getDistanceFromLevel(level);
 
-    // 현재 위치 기준 가장 가까운 동물 병원 10군데 조회
-    return animalHosptlRepository.findNearTenHosptls(currentLat, currentLon, distance);
+    // 반경 x km까지 데이터 조회
+    return animalHosptlRepository.findNearXKmHosptls(currentLat, currentLon, distance);
     
   }
 
