@@ -7,7 +7,6 @@ import com.example.petbutler.admin.service.AdminAnimalHosptlService;
 import com.example.petbutler.admin.service.AdminProductService;
 import com.example.petbutler.persist.entity.AnimalHosptl;
 import com.example.petbutler.persist.entity.Product;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -78,19 +77,13 @@ public class AdminHosptlController {
    * 동물병원 보유상품 보기
    */
   @GetMapping("/product-show.do/{id}")
-  public ResponseEntity<?> showProducts(@PathVariable long id){
+  public ResponseEntity<?> showProducts(@PathVariable Long id){
 
-    // 병원 상품 가져오기
-    List<Product> products = adminAnimalHosptlService.getProductsFromHospl(id);
+    String products = adminAnimalHosptlService.getProductsFromHospl(id);
 
-    // 상품 이름만 문자열로 파싱하기
-    StringBuilder sb = new StringBuilder();
-
-    sb.append(products.get(0).getName());
-    products.stream().limit(products.size()-1)
-        .forEach(p -> sb.append(String.format(", %s", p.getName())));
-
-    return ResponseEntity.ok(sb.toString());
+    return ResponseEntity.ok(products);
   }
+
+
 
 }

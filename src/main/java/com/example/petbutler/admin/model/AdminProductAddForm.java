@@ -13,8 +13,8 @@ import lombok.Setter;
 @Builder
 public class AdminProductAddForm {
 
-  long productId;
+  Long productId;
 
-  long hosptlId;
+  Long hosptlId;
 
 }

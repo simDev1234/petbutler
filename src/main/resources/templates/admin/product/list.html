@@ -130,17 +130,11 @@
             <tr>
               <th>no</th>
               <th>상품명</th>
-              <th>정가</th>
-              <th>할인가</th>
-              <th>재고</th>
               <th>기능</th>
             </tr>
             <tr th:each = "x, i : ${data.pageResult.content}">
               <td th:text="${i.count + (data.pageResult.pageable.pageNumber * data.pageResult.size)}">1</td>
               <td th:text="${x.name}">냠냠먹이</td>
-              <td th:text="${x.price}">21000</td>
-              <td th:text="${x.discount}">19000</td>
-              <td th:text="${x.stock}">10</td>
               <td>
                 <input type = "button" value = "수정">
                 <input type = "button" value = "삭제">

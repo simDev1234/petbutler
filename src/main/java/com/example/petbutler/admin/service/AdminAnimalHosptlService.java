@@ -11,7 +11,7 @@ public interface AdminAnimalHosptlService {
 
   Page<AnimalHosptl> getAnimalHosptlList(AdminAnimalHosptlApiForm form, Pageable pageable);
 
-  void addProductToAnimalHosptl(long hosptlId, Product product);
+  void addProductToAnimalHosptl(Long hosptlId, Product product);
 
-  List<Product> getProductsFromHospl(long id);
+  String getProductsFromHospl(Long id);
 }
