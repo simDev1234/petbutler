@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>회원 가입 완료</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    table{
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border : 1px solid black;
+    }
+    th { width : 150px; }
+    td { width : 200px; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="/fragments/layout.html::#header"></div>
+
+  <!-- User info -->
+  <div>
+    <table>
+      <tr>
+        <th>비밀번호</th>
+        <td><input id = "password" name = "password"></td>
+      </tr>
+      <tr>
+        <th>비밀번호 재입력</th>
+        <td><input id = "rePassword" name = "rePassword"></td>
+      </tr>
+      <tr>
+        <td colspan="2" style="border:none; text-align: right">
+          <button onclick = "return password_check();">탈퇴하기</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script src="/js/common.js"></script>
+  <script>
+    function password_check(){
+
+      let pwd = $("#password").val();
+      let rePwd = $("#rePassword").val();
+
+      if (pwd != rePwd) {
+        alert("비밀번호와 비밀번호 재입력이 일치하지 않습니다.");
+        $("#password").focus();
+        return false;
+      }
+
+      if (!confirm("정말 탈퇴하시겠습니까?")){
+        return false;
+      }
+
+      const url = '/user/withdraw';
+      const config = {
+        headers:{
+          "Content-Type":"application/json"
+        }
+      }
+
+      const data = {
+        password: pwd
+      }
+
+      axios.delete(url, qs.stringify(data), config)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((error) => {
+        console.log(error.response)
+      })
+
+    }
+  </script>
+</body>
+</html>

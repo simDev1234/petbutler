@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>메인</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    .intro{
+      width : 1200px;
+      margin : auto;
+      height : 200px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div th:replace="/admin/fragments/layout.html::#header"></div>
+    <div>
+      <div th:replace="/admin/fragments/layout.html::#userNav"></div>
+    </div>
+  </header>
+
+  <!-- content -->
+  <div class = "content-box intro">
+    <h2>LoremLoremLoremLoremLoremLoremLoremLoremLorem</h2>
+    <p>LoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLoremLorem</p>
+  </div>
+
+  <footer>
+    <div class = "content">
+      <h3>프로젝트 개요</h3>
+      <p>작업자 : simDev1234@gmail.com</p>
+      <p>깃허브 : <a href = "https://github.com/simDev1234">https://github.com/simDev1234</a></p>
+      <p>티스토리 : <a href = "https://why-dev.tistory.com/" target="_blank">https://why-dev.tistory.com/</a></p>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="/js/common.js"></script>
+</body>
+</html>

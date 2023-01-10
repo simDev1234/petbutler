@@ -3,11 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title>메인</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/popup.css">
 </head>
 <body>
 
-  <!-- Navigation -->
-  <div th:replace="/fragments/layout.html::nav"></div>
+  <!-- Header -->
+  <header>
+    <div th:replace="/fragments/layout.html::#header"></div>
+    <div th:if="${#strings.isEmpty(email)}">
+      <div th:replace="/fragments/layout.html::#userNav-before"></div>
+    </div>
+    <div th:if="${not #strings.isEmpty(email)}">
+      <div th:replace="/fragments/layout.html::#userNav-after"></div>
+    </div>
+  </header>
 
+  <!-- content -->
+  <div class = "content-box intro">
+    <div class = "content">
+      <h2>동물 병원 정보 찾기</h2>
+      <p>내 위치 인근의 동물 병원을 찾고, 구매할 수 있는 물품을 확인하세요.</p>
+      <ul class = "list">
+        <li>
+          <h3>🏢 동물병원 위치 제공</h3>
+          <p>현재 위치를 기준으로 동물병원과 약국의 위치를 제공합니다.</p>
+          <div><img src = "/img/map-example.png"></div>
+        </li>
+        <li>
+          <h3>💊 보유물품 확인</h3>
+          <p>목록에서 병원을 선택하면 병원이 보유한 물품을 확인할 수 있습니다.</p>
+          <div><img src = "/img/map-example2.png"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <div class = "content">
+      <h3>프로젝트 개요</h3>
+      <p>작업자 : simDev1234@gmail.com</p>
+      <p>깃허브 : <a href = "https://github.com/simDev1234">https://github.com/simDev1234</a></p>
+      <p>티스토리 : <a href = "https://why-dev.tistory.com/" target="_blank">https://why-dev.tistory.com/</a></p>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.6.1.slim.js"
+          integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk="
+          crossorigin="anonymous"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/popup.js"></script>
 </body>
 </html>

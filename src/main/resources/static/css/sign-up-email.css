@@ -2,49 +2,86 @@
   user sing-up-email css
 */
 
-/* sign-in title */
+div.login-box {
+  width: 500px;
+  margin: 100px auto auto auto;
+}
+
 h2{
   font-size:21px;
   font-weight:bold;
   text-align: center;
 }
 
-/* register form */
-.login-box{
-  width : 400px;
-  margin: auto;
-  border-radius : 5px;
-  background-color : gainsboro;
-  padding : 20px;
-  box-sizing : border-box;
+fieldset {
+  border: solid 1px #000;
+  padding: 10px;
+  display: block;
+  clear: both;
+  margin: 5px 0px;
 }
 
-.login-box input {
+legend {
+  padding: 0px 10px;
+  background: black;
+  color: #FFF;
+}
+
+#userInfo label {
+  display: inline-block;
   width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
+  margin-bottom: 10px;
 }
 
-.login-box select{
-  width:45%;
-  height:50px;
-}
-
-.login-box input[name='butlerLevel'] {
-  width:50%;
-}
-
-.login-box input[type=radio].sex { display:inline-block; width:50px }
-
-.login-box button {
+#userInfo input {
   width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border-radius : 5px;
-  background-color: black;
-  border : none;
-  color : white;
-  cursor : pointer;
+  height: 20px;
 }
+
+#userInfo div.butlerLevel{
+  width : 40%;
+}
+
+div.fieldwrapper {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+input.add {
+  float: right;
+}
+
+input.fieldname {
+  float: left;
+  clear: left;
+  display: block;
+  margin: 5px;
+}
+
+select.fieldtype {
+  float: left;
+  display: block;
+  margin: 5px;
+}
+
+input.remove {
+  float: left;
+  display: block;
+  margin: 5px;
+}
+
+#yourform label {
+  float: left;
+  clear: left;
+  display: block;
+  margin: 5px;
+}
+
+#yourform input, #yourform textarea {
+  float: left;
+  display: block;
+  margin: 5px;
+}
+
+
+

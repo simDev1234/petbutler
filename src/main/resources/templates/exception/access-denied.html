@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>접근 불가</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <style>
+    .msg-box{
+      margin-top:20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div th:replace="/fragments/layout.html::#header"></div>
+
+  <div class = "msg-box">
+    <h3>Sorry for the trouble</h3>
+    <p>access denied</p>
+  </div>
+  <script src="/js/common.js"></script>
+</body>
+</html>
