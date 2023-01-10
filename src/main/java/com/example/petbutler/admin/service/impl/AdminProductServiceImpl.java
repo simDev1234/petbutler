@@ -1,17 +1,19 @@
 package com.example.petbutler.admin.service.impl;
 
+import com.example.petbutler.admin.model.AdminProductSaveForm;
 import com.example.petbutler.admin.model.AdminProductSearchForm;
 import com.example.petbutler.admin.service.AdminProductService;
 import com.example.petbutler.exception.ButlerProductException;
 import com.example.petbutler.exception.constants.ErrorCode;
+import com.example.petbutler.model.constants.Division;
 import com.example.petbutler.persist.CategoryRepository;
 import com.example.petbutler.persist.ProductRepository;
 import com.example.petbutler.persist.entity.Category;
 import com.example.petbutler.persist.entity.Product;
-import com.example.petbutler.model.constants.Division;
+import com.example.petbutler.utils.FileUploadUtils;
+import com.example.petbutler.utils.wrapper.FilePath;
 import com.mysql.cj.util.StringUtils;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,8 @@ public class AdminProductServiceImpl implements AdminProductService {
 
   private final CategoryRepository categoryRepository;
 
+  private final FileUploadUtils fileUploadUtils;
+
   /**
    * 상품 조회
    */
@@ -39,6 +43,70 @@ public class AdminProductServiceImpl implements AdminProductService {
     setDivisionList(form);
 
     return form;
+
+  }
+
+  /**
+   * 상품 상세 조회
+   */
+  @Transactional
+  public Product getProductDetail(Long id) {
+
+    return productRepository.findById(id)
+        .orElseThrow(() -> new ButlerProductException(ErrorCode.PRODUCT_NOT_FOUND));
+  }
+
+  /**
+   * 특정 상품 조회
+   */
+  public Product findProductById(long productId) {
+
+    return productRepository.findById(productId)
+        .orElseThrow(() -> new ButlerProductException(ErrorCode.PRODUCT_NOT_FOUND));
+
+  }
+
+  /**
+   * 상품 등록
+   */
+  @Transactional
+  public Product addProduct(AdminProductSaveForm form) {
+
+    // 상품 이미지 저장
+    FilePath filePath = fileUploadUtils.copyAndPasteThumbnailFile(form.getThumbnail());
+
+    // 상품 저장
+    return productRepository.save(Product.of(form, filePath));
+
+  }
+
+  /**
+   * 상품 수정
+   */
+  @Transactional
+  public void updateProduct(AdminProductSaveForm form) {
+
+    // 상품 찾기
+    Product product = productRepository.findById(form.getProductId())
+        .orElseThrow(() -> new ButlerProductException(ErrorCode.PRODUCT_NOT_FOUND));
+
+    // 상품 수정
+    product.update(form);
+
+  }
+
+  /**
+   * 상품 삭제
+   */
+  @Transactional
+  public void deleteProduct(Long id){
+
+    // 상품 찾기
+    Product product = productRepository.findById(id)
+        .orElseThrow(() -> new ButlerProductException(ErrorCode.PRODUCT_NOT_FOUND));
+
+    // 상품 삭제
+    productRepository.deleteById(id);
 
   }
   
@@ -151,6 +219,21 @@ public class AdminProductServiceImpl implements AdminProductService {
     }
   }
 
+  public AdminProductSearchForm getDivisionList() {
+
+    AdminProductSearchForm form = new AdminProductSearchForm();
+
+    List<Category> mains   = categoryRepository.findAllByDivision(Division.MAIN);
+    List<Category> mediums = categoryRepository.findAllByDivision(Division.MEDIUM);
+    List<Category> smalls  = categoryRepository.findAllByDivision(Division.SMALL);
+
+    form.setMains(mains);
+    form.setMediums(mediums);
+    form.setSmalls(smalls);
+
+    return form;
+  }
+
   public void setDivisionList(AdminProductSearchForm form) {
 
     List<Category> mains   = categoryRepository.findAllByDivision(Division.MAIN);
@@ -163,13 +246,6 @@ public class AdminProductServiceImpl implements AdminProductService {
 
   }
 
-  /**
-   * 특정 상품 조회
-   */
-  public Product findProductById(long productId) {
 
-    return productRepository.findById(productId)
-        .orElseThrow(() -> new ButlerProductException(ErrorCode.PRODUCT_NOT_FOUND));
 
-  }
 }

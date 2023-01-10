@@ -1,12 +1,12 @@
 INSERT INTO user
-    (id, user_roles, user_status, email, password,
+    (id, user_role, user_status, email, password,
      butler_level, phone, email_auth_yn, registered_at, updated_at)
 VALUES
-    (1, 'ROLE_ADMIN, ROLE_REGULAR', 'IN_USE', 'admin@gmail.com', '$2a$10$EFGqEFJuPvOoUWr4AmyKD.iU5ys92tOqfBNSAmBsqcokqApV.eZVe',
+    (1, 'ROLE_ADMIN', 'IN_USE', 'admin@gmail.com', '$2a$10$EFGqEFJuPvOoUWr4AmyKD.iU5ys92tOqfBNSAmBsqcokqApV.eZVe',
      2, '010-1234-5678', true, '2022-10-11', '2022-11-11'),
-    (2, 'ROLE_ADMIN, ROLE_REGULAR', 'IN_USE', 'admin2@gmail.com', '$2a$10$EFGqEFJuPvOoUWr4AmyKD.iU5ys92tOqfBNSAmBsqcokqApV.eZVe',
+    (2, 'ROLE_ADMIN', 'IN_USE', 'admin2@gmail.com', '$2a$10$EFGqEFJuPvOoUWr4AmyKD.iU5ys92tOqfBNSAmBsqcokqApV.eZVe',
      2, '010-2345-5678', true, '2022-10-11', '2022-11-11'),
-    (3, 'ROLE_ADMIN, ROLE_REGULAR', 'IN_USE', 'admin3@gmail.com', '$2a$10$EFGqEFJuPvOoUWr4AmyKD.iU5ys92tOqfBNSAmBsqcokqApV.eZVe',
+    (3, 'ROLE_ADMIN', 'IN_USE', 'admin3@gmail.com', '$2a$10$EFGqEFJuPvOoUWr4AmyKD.iU5ys92tOqfBNSAmBsqcokqApV.eZVe',
      2, '010-3456-5678', true, '2022-10-11', '2022-11-11'),
     (4, 'ROLE_REGULAR', 'IN_USE', 'test@gmail.com', '$2a$10$EFGqEFJuPvOoUWr4AmyKD.iU5ys92tOqfBNSAmBsqcokqApV.eZVe',
      12, '010-1456-5678', true, '2022-10-11', '2022-11-11'),

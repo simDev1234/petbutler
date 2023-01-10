@@ -29,6 +29,7 @@
     }
 
     .products-popup{
+      display:none;
       background-color: cornflowerblue;
       width : 400px; height:400px;
       position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); z-index: 100;
@@ -48,9 +49,10 @@
     }
 
     .products-popup .close-x{
+      width:20px; height: 20px;
       position:absolute; right:5px; top:5px;
-      color:white;
       cursor:pointer;
+      z-index: 200;
     }
 
     .products-popup ul{
@@ -84,8 +86,8 @@
             <h4 class = "hosptlName" th:text="${x.hosptlName}"></h4>
             <p th:text="${x.phone}"></p>
             <p th:text="${x.address}"></p>
-            <div class = "products-popup">
-              <h2><span th:text="${x.hosptlName}"></span> 보유상품 <a class = "close-x">X</a></h2>
+            <div class = "products-popup" th:id="${'popup' + x.id}">
+              <h2><span th:text="${x.hosptlName}"></span> 보유상품 <button class = "close-x" th:id = "${'x' + x.id}">X</button></h2>
               <ul>
                 <li style = "width:120px; float:left; text-align: center" th:each="y : ${x.products}">
                   <h5 th:text="${y.name}" style = "font-size:12px"></h5>
@@ -253,14 +255,14 @@
     }
 
     $(function(){
-      $(".products-popup").hide();
-
       $(".hosptl").on('click',function(){
         $(this).find(".products-popup").show();
       });
 
       $(".close-x").on('click',function(){
-        $(".products-popup").hide();
+        let $h2 = $(this).parent();
+        let $popup = $h2.parent();
+        $popup.hide();
       });
     });
   </script>

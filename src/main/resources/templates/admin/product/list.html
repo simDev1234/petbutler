@@ -129,14 +129,15 @@
           <table>
             <tr>
               <th>no</th>
+              <th>브랜드명</th>
               <th>상품명</th>
               <th>기능</th>
             </tr>
             <tr th:each = "x, i : ${data.pageResult.content}">
               <td th:text="${i.count + (data.pageResult.pageable.pageNumber * data.pageResult.size)}">1</td>
-              <td th:text="${x.name}">냠냠먹이</td>
+              <td th:text="${x.brand}"></td>
+              <td><a th:href = "${'/admin/product/detail.do/' + x.id}" th:text = "${x.name}"></a></td>
               <td>
-                <input type = "button" value = "수정">
                 <input type = "button" value = "삭제">
               </td>
             </tr>
@@ -160,7 +161,7 @@
             <li><a>>></a></li>
           </ul>
           <input type = "hidden" name = "page" th:value="${data.pageResult.pageable.pageNumber}">
-          <input id = "register-btn" type="button" value = "등록">
+          <input id = "register-btn" type="button" value = "등록" onclick = "location.href='/admin/product/add.do'">
         </div>
       </form>
     </div>

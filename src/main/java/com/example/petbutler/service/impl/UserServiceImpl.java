@@ -4,6 +4,7 @@ import com.example.petbutler.exception.ButlerUserException;
 import com.example.petbutler.exception.constants.ErrorCode;
 import com.example.petbutler.model.PetRegisterForm;
 import com.example.petbutler.model.UserDetailForm;
+import com.example.petbutler.model.UserPasswordResetForm;
 import com.example.petbutler.model.UserSignInForm;
 import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.model.constants.UserStatus;
@@ -29,7 +30,8 @@ public class UserServiceImpl implements UserService {
   private final EmailSendUtils emailSendUtils;
 
   /**
-   * 로그인 시 아이디, 비밀번호 일치 확인
+   * 로그인 인증
+   * - 이메일이 존재하지 않는 경우, 비밀번호가 일치하지 않는 경우 실패 응답
    */
   @Override
   public User authenticate(UserSignInForm userSignInForm) {
@@ -45,12 +47,8 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * 고객 회원가입
+   * 회원가입
    * - 이미 가입한 회원인 경우 실패 응답
-   * - 회원 가입 절차
-   *    (1) 회원 등록
-   *    (2) 인증 메일 전송
-   *    (3) 반려 동물 등록
    */
   @Override
   @Transactional
@@ -60,7 +58,7 @@ public class UserServiceImpl implements UserService {
     validateIfEmailAlreadyRegistered(userSignUpForm.getEmail());
 
     // 회원 등록
-    User user = userSignUpForm.toEntity();
+    User user = User.of(userSignUpForm);
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -94,10 +92,10 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * 계정 활성화
-   * - 해당 토큰을 가진 사용자를 찾을 수 없는 경우, 정지 또는 탈퇴 상태인 경우,
-   * - 메일 인증 토큰 발행 시기가 하루가 지난 경우, 실패 응답
-   * - 전달 받은 인증 토큰
+   * 이메일 인증 (계정 활성화)
+   * - 인증키를 지닌 사용자를 찾을 수 없는 경우, 이미 인증이 된 경우,
+   *   인증키가 만료되기 전 사용자가 정지 또는 탈퇴 상태가 된 경우,
+   *   인증키가 만료된 경우 (24시간) 실패 응답
    */
   @Override
   @Transactional
@@ -114,12 +112,15 @@ public class UserServiceImpl implements UserService {
 
   private static void validateBeforeEmailAuth(User user) {
 
-    validateIfUserStatusStoppedOrWithdraw(user);
-
+    // 이미 인증된 경우
     if (user.isEmailAuthYn() || UserStatus.IN_USE.equals(user.getUserStatus())) {
       throw new ButlerUserException(ErrorCode.USER_ALREADY_AUTHORIZED);
     }
+    
+    // 인증키가 만료되기 전 사용자가 정지 또는 탈퇴 상태가 된 경우
+    validateIfUserStatusStoppedOrWithdraw(user);
 
+    // 인증키가 만료된 경우
     LocalDateTime today = LocalDateTime.now();
 
     if (user.getEmailAuthExpiredAt().isBefore(today.minusDays(1))) {
@@ -200,6 +201,36 @@ public class UserServiceImpl implements UserService {
 
     user.setButlerLevel(form.getButlerLevel());
     user.setPhone(form.getPhone());
+  }
+
+  /**
+   * 비밀번호 재설정 메일 전송
+   */
+  public void sendPasswordResetPage(String email) {
+
+    if (!userRepository.existsByEmail(email)) {
+      throw new ButlerUserException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    String subject = "[팻집사] 비밀번호 재설정 메일";
+    String content = "<a href = 'http://localhost:8080/user/reset-password?email="+ email +"'>비밀번호 재설정 하러 가기</a>";
+
+    emailSendUtils.sendMail(email, subject, content);
+
+  }
+
+  /**
+   * 비밀번호 재설정
+   */
+  @Override
+  @Transactional
+  public void passwordReset(UserPasswordResetForm form) {
+
+    User user = userRepository.findByEmail(form.getEmail())
+        .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
+
+    user.setPassword(passwordEncoder.encode(form.getPassword()));
+
   }
 
   /**

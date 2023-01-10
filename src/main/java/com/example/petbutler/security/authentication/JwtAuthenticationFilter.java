@@ -1,7 +1,7 @@
 package com.example.petbutler.security.authentication;
 
-import com.mysql.cj.util.StringUtils;
 import java.io.IOException;
+import java.util.Objects;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     String token = jwtTokenProvider.resolveTokenFromRequest(request);
 
     // 토큰 유효성 파악
-    if (!StringUtils.isNullOrEmpty(token) && jwtTokenProvider.validateToken(token)) {
+    if (Objects.nonNull(token) && jwtTokenProvider.validateToken(token)) {
       // 유효할 경우 유저 정보를 받아온다.
       Authentication authentication = jwtTokenProvider.getAuthentication(token);
       // SecurityContext에 Authentication 저장

@@ -1,7 +1,5 @@
 package com.example.petbutler.admin.service.impl;
 
-import static com.example.petbutler.model.constants.UserRole.ROLE_ADMIN;
-
 import com.example.petbutler.admin.model.AdminUserDetailForm;
 import com.example.petbutler.admin.model.AdminUserInfo;
 import com.example.petbutler.admin.model.AdminUserListForm;
@@ -14,8 +12,8 @@ import com.example.petbutler.model.constants.UserStatus;
 import com.example.petbutler.persist.PetRepository;
 import com.example.petbutler.persist.UserRepository;
 import com.example.petbutler.persist.entity.User;
-import com.mysql.cj.util.StringUtils;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,42 +36,37 @@ public class AdminUserServiceImpl implements AdminUserService {
   @Override
   public Page<AdminUserInfo> getAdminUserList(AdminUserListForm form, Pageable pageable) {
 
-    // 이메일 검색을 할 때
-    if (!StringUtils.isNullOrEmpty(form.getSearchKey())
-        && StringUtils.isNullOrEmpty(form.getSearchValue())) {
+    // 검색을 할 때
+    if (Objects.nonNull(form.getSearchKey())) {
 
-      // 회원 유형, 이메일 검색어
-      String role        = form.getSearchKey();
-      String emailSearch = form.getSearchValue();
+      String searchKey   = form.getSearchKey();
+      String searchValue = form.getSearchValue();
 
-      // 회원 유형 구분이 없을 때
-      if ("all".equals(role)){
+      // 전체 회원 중 검색
+      if ("all".equals(searchKey)){
 
-        return userRepository.findAllByEmailContainsIgnoreCase(pageable, emailSearch)
-                             .map(c -> AdminUserInfo.fromEntity(c));
+        if (Objects.nonNull(searchValue)) {
+          return userRepository.findAllByEmailContains(pageable, searchValue)
+                     .map(AdminUserInfo::fromEntity);
+        } else {
+          return userRepository.findAll(pageable).map(AdminUserInfo::fromEntity);
+        }
 
-      } 
-      // 회원 유형 구분이 있을 때
+      }
+      // 일반 회원 또는 관리자에서 검색
       else {
 
-        return isAdmin(role)?
-            userRepository.findAllByUserRolesContainingAndEmailContainsIgnoreCase(pageable, ROLE_ADMIN, emailSearch)
-                          .map(c -> AdminUserInfo.fromEntity(c)) :
-            userRepository.findAllByUserRolesNotContainingAndEmailContainsIgnoreCase(pageable, ROLE_ADMIN, emailSearch)
-                          .map(c -> AdminUserInfo.fromEntity(c));
+        UserRole role = UserRole.valueOf(String.format("ROLE_%s", searchKey.toUpperCase()));
+
+        return userRepository.findAllByUserRoleAndEmailContains(pageable, role, searchValue)
+            .map(AdminUserInfo::fromEntity);
 
       }
 
     }
 
-    // 이메일 검색을 하지 않을 때
-    return userRepository.findAll(pageable).map(c -> AdminUserInfo.fromEntity(c));
-  }
-
-  private boolean isAdmin(String searchValue) {
-
-    return "admin".equals(searchValue) ? true : false;
-
+    // 검색을 하지 않을 때
+    return userRepository.findAll(pageable).map(AdminUserInfo::fromEntity);
   }
 
   /**
@@ -89,7 +82,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
 
     // User -> AdminUserDetailForm
-    AdminUserDetailForm userDetailForm = user.toUserDetailForm();
+    AdminUserDetailForm userDetailForm = AdminUserDetailForm.fromEntity(user);
 
     // Pet 정보 DB에서 조회
     List<PetDetailForm> pets =
@@ -105,7 +98,9 @@ public class AdminUserServiceImpl implements AdminUserService {
   }
 
   /**
-   * 회원 상세 수정 - 연락처, 회원 상태 및 역할(권한)만 변경할 수 있다.
+   * 회원 상세 수정
+   * - 연락처, 회원 상태 및 역할(권한)만 변경할 수 있다.
+   * - 등록된 회원이 없는 경우 실패 응답
    */
   @Transactional
   public void updateUserStatusAndUserRole(AdminUserDetailForm adminUserDetailForm) {
@@ -113,15 +108,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     User user = userRepository.findByEmail(adminUserDetailForm.getEmail())
         .orElseThrow(() -> new ButlerUserException(ErrorCode.USER_NOT_FOUND));
 
-    user.setUserRoles(adminUserDetailForm.getRoles());
-
-    if (UserStatus.IN_USE.equals(user.getUserStatus())) {
-      user.authorize();
-    } else {
-      user.setUserStatus(adminUserDetailForm.getUserStatus());
-    }
-
     user.setPhone(adminUserDetailForm.getPhone());
+    user.setUserRole(UserRole.valueOf(adminUserDetailForm.getUserRole()));
+    user.setUserStatus(UserStatus.valueOf(adminUserDetailForm.getUserStatus()));
 
   }
 

@@ -4,6 +4,7 @@ import com.example.petbutler.persist.entity.Category;
 import com.example.petbutler.model.constants.Division;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -51,4 +52,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
   Optional<Category> findByCode(String code);
 
+  Optional<Category> findByDivisionAndName(Division division, String name);
 }

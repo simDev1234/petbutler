@@ -1,19 +1,17 @@
 package com.example.petbutler.service.impl;
 
-import com.example.petbutler.config.ServerConfig;
 import com.example.petbutler.exception.ButlerPetException;
-import com.example.petbutler.model.PetDetailForm;
-import com.example.petbutler.model.PetRegisterForm;
-import com.example.petbutler.persist.entity.User;
-import com.example.petbutler.persist.entity.Pet;
 import com.example.petbutler.exception.ButlerUserException;
 import com.example.petbutler.exception.constants.ErrorCode;
-import com.example.petbutler.persist.UserRepository;
+import com.example.petbutler.model.PetDetailForm;
+import com.example.petbutler.model.PetRegisterForm;
 import com.example.petbutler.persist.PetRepository;
+import com.example.petbutler.persist.UserRepository;
+import com.example.petbutler.persist.entity.Pet;
+import com.example.petbutler.persist.entity.User;
 import com.example.petbutler.service.PetService;
-import com.example.petbutler.utils.wrapper.FilePath;
 import com.example.petbutler.utils.FileUploadUtils;
-import java.io.IOException;
+import com.example.petbutler.utils.wrapper.FilePath;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +32,6 @@ public class PetServiceImpl implements PetService {
 
   private final UserRepository userRepository;
 
-  private final ServerConfig serverConfig;
   private final FileUploadUtils fileUploadUtils;
 
   /**
@@ -101,17 +97,13 @@ public class PetServiceImpl implements PetService {
 
     int count = (int)Arrays.stream(petRegisterForm.getName()).filter(e -> e != null && !e.equals("")).count();
 
-    if (count == 0) {
-      return false;
-    }
-
-    return true;
+    return count != 0;
   }
 
   private List<Pet> copyThumbnailAndGetPets(User user, PetRegisterForm petRegisterForm) {
 
     // copy thumbnail files
-    List<FilePath> newFilePaths = copyAndPasteThumbnailFiles(petRegisterForm.getThumbnail());
+    List<FilePath> newFilePaths = fileUploadUtils.copyAndPasteThumbnailFiles(petRegisterForm.getThumbnail());
 
     // form -> pet
     List<Pet> pets = new ArrayList<>();
@@ -123,38 +115,6 @@ public class PetServiceImpl implements PetService {
 
     return pets;
 
-  }
-
-  private List<FilePath> copyAndPasteThumbnailFiles(MultipartFile[] files) {
-
-    List<FilePath> filePaths = new ArrayList();
-
-    if (Objects.nonNull(files)) {
-
-      String localRoot = serverConfig.getPetThumbnailLocalRoot();
-      String urlRoot   = serverConfig.getPetThumbnailUrlRoot();
-
-      for (MultipartFile file : files) {
-
-        try{
-
-          if (Objects.nonNull(file)) {
-            FilePath filePath
-                = fileUploadUtils.saveFile(file, file.getOriginalFilename(), localRoot, urlRoot);
-            filePaths.add(filePath);
-          } else {
-            filePaths.add(new FilePath("",""));
-          }
-
-        } catch(IOException e) {
-
-          log.info(e.getMessage());
-
-        }
-      }
-    }
-
-    return filePaths;
   }
 
   /**

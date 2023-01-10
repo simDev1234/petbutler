@@ -47,44 +47,42 @@
 
   <!-- content -->
   <div class = "content-box detail">
-    <form method = "post" action = "/admin/product/update.do">
-      <input type="hidden" name="_method" value="PUT">
-      <h2 style = "text-align:left">상품수정</h2>
+    <form method = "post" action = "/admin/product/add.do" enctype="multipart/form-data">
+      <h2 style = "text-align:left">상품등록</h2>
       <table>
         <tr>
           <th>카테고리</th>
           <td>
             <select class = "division" id ="main" name ="main">
               <option value = "none">대분류</option>
-              <option th:selected="${#strings.equals(x.code, product.categoryMainCode)}" th:each="x : ${category.mains}" th:value = "${x.code}" th:text="${x.name}"></option>
+              <option th:each="x : ${data.mains}" th:value = "${x.code}" th:text="${x.name}"></option>
             </select>
             <select class = "division" id ="medium" name ="medium">
               <option value = "none">중분류</option>
-              <option th:selected="${#strings.equals(x.code, product.categoryMediumCode)}" th:each="x : ${category.mediums}" th:value = "${x.code}" th:text="${x.name}"></option>
+              <option th:each="x : ${data.mediums}" th:value = "${x.code}" th:text="${x.name}"></option>
             </select>
             <select class = "division" id ="small" name ="small">
               <option value = "none">소분류</option>
-              <option th:selected="${#strings.equals(x.code, product.categorySmallCode)}" th:each="x : ${category.smalls}" th:value = "${x.code}" th:text="${x.name}"></option>
+              <option th:each="x : ${data.smalls}" th:value = "${x.code}" th:text="${x.name}"></option>
             </select>
           </td>
         </tr>
         <tr>
           <th>이미지</th>
-          <td><img th:src="${product.getThumbnailUrlPath()}" style = "max-width:100px; max-height:100px"></td>
+          <td><input type = "file" name = "thumbnail" ></td>
         </tr>
         <tr>
           <th>브랜드명</th>
-          <td><input th:value="${product.brand}" name = "brand"></td>
+          <td><input name = "brand"></td>
         </tr>
         <tr>
           <th>상품명</th>
-          <td><input th:value="${product.name}" type = "text" name = "name"></td>
+          <td><input type = "text" name = "name"></td>
         </tr>
       </table>
-      <input type = "hidden" name = "productId" th:value="${product.id}">
       <div class = "buttons">
         <input type = "button" value = "목록" onclick = "location.href='/admin/product/list.do'">
-        <input id = "update" type = "submit" value = "수정">
+        <input id = "create" type = "submit" value = "등록">
       </div>
     </form>
   </div>
