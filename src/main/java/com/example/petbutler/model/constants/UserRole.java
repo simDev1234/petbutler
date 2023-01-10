@@ -1,5 +1,7 @@
 package com.example.petbutler.model.constants;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,22 +15,12 @@ public enum UserRole {
 
   private final String description;
 
-  public static UserRole getUserRole(String userRole) {
-
-    return isAdmin(userRole) ? ROLE_ADMIN : ROLE_REGULAR;
-
+  public List<UserRole> getRoles(){
+    return isAdmin(this) ?  new ArrayList(Arrays.asList(ROLE_REGULAR, ROLE_ADMIN)) : new ArrayList(Arrays.asList(ROLE_REGULAR));
   }
 
-  public static UserRole getUserRole(List<String> userRoles){
-    return isAdmin(userRoles) ? ROLE_ADMIN : ROLE_REGULAR;
-  }
-
-  public static boolean isAdmin(String userRole){
-    return userRole.equals(UserRole.ROLE_ADMIN.name());
-  }
-
-  public static boolean isAdmin(List<String> userRoles) {
-    return userRoles.contains(ROLE_ADMIN.name()) ? true : false;
+  public static boolean isAdmin(UserRole userRole){
+    return UserRole.ROLE_ADMIN.equals(userRole);
   }
 
   public boolean isAdmin() {

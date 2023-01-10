@@ -257,9 +257,10 @@
         };
 
         const formData = new FormData();
-        const $tr  = $(this).parentsUntil('table');
+        const $td = $(this).parent();
+        const $tr = $td.parent();
         const code = $tr.children('.code').text();
-        const name = $tr.find('.name').val();
+        const name = $tr.children('.name').val();
 
         formData.append("code", code);
         formData.append("name", name);
@@ -295,9 +296,9 @@
 
       });
 
-      let page = [[${data.pageResult.pageable.pageNumber}]];
+      let page = [[${pageResult.pageable.pageNumber}]];
       let page_first = Math.floor(page / 10) * 10;
-      let total = [[${data.pageResult.totalPages}]];
+      let total = [[${pageResult.totalPages}]];
 
       // 현재 페이지 on
       $(".pagination ul").children('li:eq(' + ((page % 10) + 2) + ')').addClass('on');

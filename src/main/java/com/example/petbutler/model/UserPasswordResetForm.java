@@ -1,7 +1,6 @@
-package com.example.petbutler.admin.model;
+package com.example.petbutler.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,11 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
-public class AdminProductAddForm {
-
-  Long productId;
-
-  Long hosptlId;
-
+public class UserPasswordResetForm {
+  private String email;
+  private String password;
 }

@@ -1,5 +1,6 @@
 package com.example.petbutler.security.authentication;
 
+import com.example.petbutler.model.constants.UserRole;
 import com.example.petbutler.service.UserService;
 import com.mysql.cj.util.StringUtils;
 import io.jsonwebtoken.Claims;
@@ -8,7 +9,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -40,13 +40,13 @@ public class JwtTokenProvider {
   /**
    * 토큰 생성
    */
-  public String generateToken(String email, List<String> roles){
+  public String generateToken(String email, UserRole userRole){
 
     Date now = new Date();
     Date expiredDate = new Date(now.getTime() + TOKEN_EXPIRATION_TIME);
 
     Claims claims = Jwts.claims().setSubject(email);
-    claims.put(KEY_ROLES, roles);
+    claims.put(KEY_ROLES, userRole);
 
     return Jwts.builder()
         .setClaims(claims)

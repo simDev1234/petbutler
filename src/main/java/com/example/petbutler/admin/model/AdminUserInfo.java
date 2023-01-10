@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Page;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,7 +29,7 @@ public class AdminUserInfo {
     return AdminUserInfo.builder()
         .email(user.getEmail())
         .phone(user.getPhone())
-        .userRole(UserRole.getUserRole(user.getUserRoles()))
+        .userRole(user.getUserRole())
         .userStatus(user.getUserStatus())
         .butlerLevel(user.getButlerLevel())
         .registeredAt(user.getRegisteredAt())

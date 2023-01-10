@@ -2,6 +2,7 @@ package com.example.petbutler.web;
 
 import com.example.petbutler.model.PetRegisterForm;
 import com.example.petbutler.model.UserDetailForm;
+import com.example.petbutler.model.UserPasswordResetForm;
 import com.example.petbutler.model.UserSignInForm;
 import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.persist.entity.User;
@@ -66,7 +67,7 @@ public class UserController {
     User user = userService.authenticate(userSignInForm);
 
     // JWT 토큰 생성
-    String token = jwtTokenProvider.generateToken(user.getEmail(), user.getUserRoles());
+    String token = jwtTokenProvider.generateToken(user.getEmail(), user.getUserRole());
 
     // 응답 헤더의 쿠키에 HttpOnly로 토큰 저장
     String cookieValue = String.format("%s%s", JwtTokenProvider.TOKEN_PREFIX, token);
@@ -84,6 +85,56 @@ public class UserController {
 
     return "redirect:/";
   }
+
+  /**
+   * 비밀번호 찾기 페이지 이동
+   */
+  @GetMapping("/find-password")
+  public String getFindPasswordPage(){
+    return "user/password-find";
+  }
+
+  /**
+   * 비밀번호 변경 이메일 전송
+   */
+  @GetMapping("/reset-email")
+  public String sendPasswordResetPage(@RequestParam String email, Model model){
+
+    userService.sendPasswordResetPage(email);
+
+    String msg = String.format("%s 로 비밀번호 변경 링크를 전송하였습니다. 해당 링크를 통해 비밀번호를 재설정해주세요.", email);
+
+    model.addAttribute("msg", msg);
+
+    return "user/password-complete-msg";
+  }
+
+  /**
+   * 비밀번호 변경 페이지 이동
+   */
+  @GetMapping("/reset-password")
+  public String getResetPasswordPage(@RequestParam String email, Model model){
+
+    model.addAttribute("email", email);
+
+    return "user/password-reset";
+  }
+
+  /**
+   * 비밀번호 변경
+   */
+  @PostMapping("/reset-password")
+  public String resetPassword(UserPasswordResetForm form, Model model) {
+
+    userService.passwordReset(form);
+
+    String msg = "비밀번호가 정성적으로 변경되었습니다. 다시 로그인 해주세요.";
+
+    model.addAttribute("msg", msg);
+
+    return "user/password-complete-msg";
+  }
+
 
   /**
    * 회원가입 페이지 이동

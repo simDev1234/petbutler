@@ -1,6 +1,7 @@
 package com.example.petbutler.service;
 
 import com.example.petbutler.model.UserDetailForm;
+import com.example.petbutler.model.UserPasswordResetForm;
 import com.example.petbutler.model.UserSignInForm;
 import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.model.PetRegisterForm;
@@ -19,6 +20,10 @@ public interface UserService extends UserDetailsService {
   UserDetailForm getUserDetailByEmail(String email);
 
   void updateUser(UserDetailForm form);
+
+  void sendPasswordResetPage(String email);
+
+  void passwordReset(UserPasswordResetForm form);
 
   void withdraw(String email);
 

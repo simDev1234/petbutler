@@ -1,14 +1,13 @@
 package com.example.petbutler.persist.entity;
 
-import com.example.petbutler.admin.model.AdminUserDetailForm;
+import static com.example.petbutler.model.constants.UserRole.ROLE_REGULAR;
+import com.example.petbutler.model.UserSignUpForm;
 import com.example.petbutler.model.constants.UserRole;
 import com.example.petbutler.model.constants.UserStatus;
-import com.example.petbutler.persist.converter.StringListConverter;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -52,8 +51,8 @@ public class User extends BaseEntity implements UserDetails {
   private LocalDateTime emailAuthExpiredAt;
 
   // 회원 역할
-  @Convert(converter = StringListConverter.class)
-  private List<String> userRoles;
+  @Enumerated(value = EnumType.STRING)
+  private UserRole userRole;
 
   // 회원 상태
   @Enumerated(value = EnumType.STRING)
@@ -62,7 +61,9 @@ public class User extends BaseEntity implements UserDetails {
   // user detail override
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return this.userRoles.stream()
+
+    return this.userRole.getRoles().stream()
+            .map(String::valueOf)
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
   }
@@ -100,16 +101,18 @@ public class User extends BaseEntity implements UserDetails {
     this.setEmailAuthExpiredAt(null);
   }
 
-  public AdminUserDetailForm toUserDetailForm() {
+   public static User of(UserSignUpForm userSignUpForm) {
 
-    return AdminUserDetailForm.builder()
-        .email(this.getEmail())
-        .userStatus(this.getUserStatus())
-        .userRole(UserRole.getUserRole(this.getUserRoles()).name())
-        .butlerLevel(this.getButlerLevel())
-        .phone(this.getPhone())
-        .registeredAt(this.getRegisteredAt())
-        .updatedAt(this.getUpdatedAt())
+    return User.builder()
+        .email(userSignUpForm.getEmail())
+        .password(userSignUpForm.getPassword())
+        .butlerLevel(userSignUpForm.getButlerLevel())
+        .phone(userSignUpForm.getPhone())
+        .userRole(ROLE_REGULAR)
+        .userStatus(UserStatus.NOT_AUTHORIZED)
+        .emailAuthYn(false)
+        .emailAuthKey(UUID.randomUUID().toString().replace("-", ""))
+        .emailAuthExpiredAt(LocalDateTime.now().plusDays(1))
         .build();
   }
 }

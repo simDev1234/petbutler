@@ -1,5 +1,8 @@
 package com.example.petbutler.admin.service.impl;
 
+import static com.example.petbutler.model.constants.Division.MAIN;
+import static com.example.petbutler.model.constants.Division.MEDIUM;
+
 import com.example.petbutler.admin.model.AdminCategoryForm;
 import com.example.petbutler.admin.service.AdminCategoryService;
 import com.example.petbutler.exception.ButlerCategoryException;
@@ -57,11 +60,11 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
       Division division = c.getDivision();
       String code = c.getCode();
 
-      if (Division.MAIN.equals(division)) {
+      if (MAIN.equals(division)) {
 
         result.put(code, productRepository.countAllByCategoryMainCode(code));
 
-      } else if (Division.MEDIUM.equals(division)) {
+      } else if (MEDIUM.equals(division)) {
 
         result.put(code, productRepository.countAllByCategoryMediumCode(code));
 
@@ -79,8 +82,8 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
 
   public void setDivisionList(AdminCategoryForm form) {
     
-    List<String> mains   = categoryRepository.findDistinctNameByDivision(Division.MAIN.name());
-    List<String> mediums = categoryRepository.findDistinctNameByDivision(Division.MEDIUM.name());
+    List<String> mains   = categoryRepository.findDistinctNameByDivision(MAIN.name());
+    List<String> mediums = categoryRepository.findDistinctNameByDivision(MEDIUM.name());
     List<String> smalls  = categoryRepository.findDistinctNameByDivision(Division.SMALL.name());
 
     form.setMains(mains);
@@ -184,19 +187,38 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     }
 
     // 전체 division code
-    if (Division.MAIN.equals(division)) {
+    if (MAIN.equals(division)) {
       // 대분류일 때
       return String.format("%s000000", sb);
 
-    } else if (Division.MEDIUM.equals(division)) {
+    } else if (MEDIUM.equals(division)) {
       // 중분류일 때
-      return String.format("%s%s000", form.getMain(), sb);
+      String mainCode = extractDivisionCode(MAIN, form.getMain());
+
+      return String.format("%s%s000", mainCode, sb);
 
     } else{
       // 소분류일 때
-      return String.format("%s%s%s", form.getMain(), form.getMedium(), sb);
+      String mediumCode = extractDivisionCode(MEDIUM, form.getMedium());
+
+      return String.format("%s%s", mediumCode, sb);
     }
 
+  }
+
+  public String extractDivisionCode(Division division, String name) {
+
+    String categoryCode = findByDivisionAndName(division, name).getCode();
+
+    int len = (division.ordinal() + 1) * 3;
+
+    return categoryCode.substring(0, len);
+
+  }
+
+  public Category findByDivisionAndName(Division division, String name) {
+    return categoryRepository.findByDivisionAndName(division, name)
+        .orElseThrow(() -> new ButlerCategoryException(ErrorCode.CATEGORY_NOT_FOUND));
   }
 
   /**

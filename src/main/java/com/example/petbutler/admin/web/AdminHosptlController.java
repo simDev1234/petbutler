@@ -1,7 +1,7 @@
 package com.example.petbutler.admin.web;
 
 import com.example.petbutler.admin.model.AdminAnimalHosptlApiForm;
-import com.example.petbutler.admin.model.AdminProductAddForm;
+import com.example.petbutler.admin.model.AdminProductSaveForm;
 import com.example.petbutler.admin.model.AdminProductSearchForm;
 import com.example.petbutler.admin.service.AdminAnimalHosptlService;
 import com.example.petbutler.admin.service.AdminProductService;
@@ -62,7 +62,7 @@ public class AdminHosptlController {
    * 동물병원에 상품 등록
    */
   @PutMapping("/product-add.do")
-  public ResponseEntity<?> addProduct(@RequestBody AdminProductAddForm form){
+  public ResponseEntity<?> addProduct(@RequestBody AdminProductSaveForm form){
         
     // 해당 상품 가져오기
     Product product = adminProductService.findProductById(form.getProductId());
